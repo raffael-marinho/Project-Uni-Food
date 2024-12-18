@@ -1,4 +1,4 @@
-const User = require("../models/Vendedor");
+const Vendedor = require("../models/Vendedor");
 const fs = require("fs");
 
 // Salvar imagem e associar a um usuário vendedor
@@ -6,9 +6,14 @@ exports.create = async (req, res) => {
     try {
         const { vendedorId } = req.body;
         const file = req.file;
+        // Verificar se foi enviada alguma imagem
+        if (!file) {
+            return res.status(400).json({ msg: "Nenhuma imagem foi enviada." });
+        }
+        
 
         // Verificar se o usuário existe
-        const vendedor = await vendedor.findById(vendedorId);
+        const vendedor = await Vendedor.findById(vendedorId);
         if (!vendedor) {
             return res.status(404).json({ msg: "Usuário não encontrado" });
         }
@@ -31,7 +36,7 @@ exports.remove = async (req, res) => {
         const { vendedorId } = req.body;
 
         // Verificar se o usuário existe
-        const vendedor = await vendedor.findById(vendedorId);
+        const vendedor = await Vendedor.findById(vendedorId);
         if (!vendedor) {
             console.log("Vendedor não encontrado");
             return res.status(404).json({ message: "Vendedor não encontrado" });

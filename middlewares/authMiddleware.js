@@ -10,7 +10,8 @@ function checkToken(req, res, next) {
 
     try {
         const secret = process.env.SECRET;
-        jwt.verify(token, secret);
+        const decoded = jwt.verify(token, secret);
+        req.user = decoded;
         next();
     } catch (error) {
         res.status(400).json({ msg: 'Token inválido' });
