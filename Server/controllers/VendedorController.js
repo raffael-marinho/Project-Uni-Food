@@ -24,8 +24,18 @@ class VendedorController {
         }
     }
 
-    async getOneVendedor() {
+    async getOneVendedor(req, res) {
+        const id = req.params.id;
 
+        try {
+            const vendedor = await Vendedor.findById(id);
+            if (!vendedor) {
+                return res.status(404).json({ msg: 'Vendedor não encontrado.' });
+            }
+            return res.status(200).json(vendedor);
+        } catch (error) {
+            return res.status(500).json({ error: "Erro ao buscar vendedor." });
+        }
     }
 
     async updateVendedor() {
