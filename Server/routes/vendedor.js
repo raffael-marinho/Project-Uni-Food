@@ -5,8 +5,12 @@ const express = require('express');
 const router = express.Router();
 const Vendedor = require('../models/Vendedor');
 const checkToken = require('../middlewares/authMiddleware');
+const VendedorController = require('../controllers/VendedorController');
 
 // Rota privada para pegar os detalhes do vendedor
+
+router.post("/", VendedorController.postVendedor);
+
 router.get('/:id', checkToken, async (req, res) => {
     const id = req.params.id;
 
