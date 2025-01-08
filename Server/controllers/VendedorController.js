@@ -10,8 +10,18 @@ class VendedorController {
         }
     }
 
-    async getAllVendedor() {
+    async getAllVendedor(req, res) {
+        try {
+            const vendedores = await Vendedor.find();
 
+            if (vendedores.length === 0) {
+                return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
+            }
+
+            return res.status(200).json(vendedores);
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro ao recuperar vendedores.' });
+        }
     }
 
     async getOneVendedor() {

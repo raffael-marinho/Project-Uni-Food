@@ -11,6 +11,8 @@ const VendedorController = require('../controllers/VendedorController');
 
 router.post("/", VendedorController.postVendedor);
 
+router.get("/", VendedorController.getAllVendedor);
+
 router.get('/:id', checkToken, async (req, res) => {
     const id = req.params.id;
 
