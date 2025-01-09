@@ -34,5 +34,7 @@ router.get('/:id', checkToken, async (req, res) => {
 
 router.put('/:id', checkToken, VendedorController.updateVendedor);
 
+router.delete('/:id', checkToken, VendedorController.deleteVendedor);
+
 
 module.exports = router;

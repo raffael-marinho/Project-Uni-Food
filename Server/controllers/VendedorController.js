@@ -53,8 +53,19 @@ class VendedorController {
         }
     }
 
-    async deleteVendedor() {
+    async deleteVendedor(req, res) {
+        try {
+            const { id } = req.params;
+            const deletePorId = await Vendedor.findByIdAndDelete(id, req.body, { new: true });
 
+            if (!deletePorId) {
+                return res.status(404).json({ message: "Vendedor não encontrado para ser deletado." });
+            }
+
+            return res.status(200).json({ message: "Vendedor deletado com sucesso.", deletePorId });
+        } catch (error) {
+            return res.status(500).json({ error: "Erro ao deletar Vendedor.", details: error.message });
+        }
     }
 }
 
