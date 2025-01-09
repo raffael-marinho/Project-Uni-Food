@@ -32,4 +32,7 @@ router.get('/:id', checkToken, async (req, res) => {
     }
 });
 
+router.put('/:id', checkToken, VendedorController.updateVendedor);
+
+
 module.exports = router;
