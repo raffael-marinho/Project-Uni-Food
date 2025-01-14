@@ -71,17 +71,26 @@ class VendedorController {
     }
 
     async deleteVendedor(req, res) {
-        try {
-            const { id } = req.params;
-            const deletePorId = await Vendedor.findByIdAndDelete(id, req.body, { new: true });
+        const id = req.params.id;
 
-            if (!deletePorId) {
-                return res.status(404).json({ message: "Vendedor não encontrado para ser deletado." });
+        if (req.user._id !== id) {
+            return res.status(403).json({ msg: 'Você não tem permissão para excluir este vendedor.' });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ msg: 'ID inválido' });
+        }
+
+        try {
+            const vendedor = await Vendedor.findByIdAndDelete(id);
+
+            if (!vendedor) {
+                return res.status(404).json({ msg: 'Usuário não encontrado para ser deletado.' });
             }
 
-            return res.status(200).json({ message: "Vendedor deletado com sucesso.", deletePorId });
+            return res.status(200).json({ msg: 'Vendedor deletado com sucesso.', vendedor });
         } catch (error) {
-            return res.status(500).json({ error: "Erro ao deletar Vendedor.", details: error.message });
+            return res.status(500).json({ error: 'Erro ao deletar o vendedor.', details: error.message });
         }
     }
 }
