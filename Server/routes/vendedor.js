@@ -1,9 +1,7 @@
 // routes/vendedor.js
-// const mongoose = require('mongoose');
 
 const express = require('express');
 const router = express.Router();
-const Vendedor = require('../models/Vendedor');
 const checkToken = require('../middlewares/authMiddleware');
 const VendedorController = require('../controllers/VendedorController');
 

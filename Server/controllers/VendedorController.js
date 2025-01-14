@@ -4,8 +4,11 @@ const mongoose = require('mongoose');
 class VendedorController {
     async postVendedor(req, res) {
         try {
-            const createdVendedor = await Vendedor.create(req.body);
-            return res.status(201).json(createdVendedor);
+            const vendedor = new Vendedor(req.body);
+            await vendedor.save();
+
+            const { senha, ...vendedorSemSenha } = vendedor.toObject();
+            return res.status(201).json(vendedorSemSenha);
         } catch (error) {
             return res.status(500).json({ error: "Erro ao criar vendedor." });
         }
@@ -45,17 +48,25 @@ class VendedorController {
     }
 
     async updateVendedor(req, res) {
-        try {
-            const { id } = req.params;
-            const updated = await Vendedor.findByIdAndUpdate(id, req.body, { new: true });
+        const id = req.params.id;
 
-            if (!updated) {
-                return res.status(404).json({ message: "Vendedor não encontrado para atualização." });
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ msg: 'ID inválido' });
+        }
+
+        try {
+            const updatedVendedor = await Vendedor.findByIdAndUpdate(id, req.body, {
+                new: true,
+                runValidators: true,
+            }).select('-senha');
+
+            if (!updatedVendedor) {
+                return res.status(404).json({ msg: 'Usuário não encontrado' });
             }
 
-            return res.status(200).json({ message: "Vendedor atualizado com sucesso.", updated });
+            res.status(200).json({ msg: 'Vendedor atualizado com sucesso', vendedor: updatedVendedor });
         } catch (error) {
-            return res.status(500).json({ error: "Erro ao atualizar Vendedor.", details: error.message });
+            res.status(500).json({ msg: 'Erro no servidor', error: error.message });
         }
     }
 
