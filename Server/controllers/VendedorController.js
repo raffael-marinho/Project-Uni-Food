@@ -16,7 +16,7 @@ class VendedorController {
 
     async getAllVendedor(req, res) {
         try {
-            const vendedores = await Vendedor.find();
+            const vendedores = await Vendedor.find().select('-senha');
 
             if (vendedores.length === 0) {
                 return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
