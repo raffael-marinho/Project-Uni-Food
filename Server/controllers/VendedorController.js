@@ -31,6 +31,10 @@ class VendedorController {
     async getOneVendedor(req, res) {
         const id = req.params.id;
 
+        if (req.user._id !== id) {
+            return res.status(403).json({ msg: 'Você não tem permissão para excluir este vendedor.' });
+        }
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ msg: 'ID inválido' });
         }
@@ -50,9 +54,14 @@ class VendedorController {
     async updateVendedor(req, res) {
         const id = req.params.id;
 
+        if (req.user._id !== id) {
+            return res.status(403).json({ msg: 'Você não tem permissão para excluir este vendedor.' });
+        }
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ msg: 'ID inválido' });
         }
+
 
         try {
             const vendedor = await Vendedor.findById(id);
