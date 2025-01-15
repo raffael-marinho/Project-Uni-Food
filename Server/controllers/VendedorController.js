@@ -1,8 +1,43 @@
-const Vendedor = require('../models/Vendedor');
 const mongoose = require('mongoose');
+const Vendedor = require('../models/Vendedor');
 
 class VendedorController {
     async postVendedor(req, res) {
+        const { nome, email, senha, telefone } = req.body;
+
+        // Validação de Dados Obrigatórios
+        if (!nome || !email || !senha || !telefone) {
+            return res.status(400).json({ msg: 'Nome, email, senha e telefone são obrigatórios.' });
+        }
+
+        // Validação de comprimento de nome e telefone
+        if (nome.length < 5 || nome.length > 50) {
+            return res.status(400).json({ msg: 'O nome deve ter entre 5 e 50 caracteres.' });
+        }
+
+        if (telefone.length < 10 || telefone.length > 15) {
+            return res.status(400).json({ msg: 'O telefone deve ter entre 10 e 15 caracteres.' });
+        }
+
+        // Regex para validar email com domínios específicos
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|hotmail\.com)$/;
+
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ msg: 'O email deve ser válido e ter o domínio @gmail.com, @outlook.com ou @hotmail.com.' });
+        }
+        // Validação de Email Único
+        const vendedorExistente = await Vendedor.findOne({ email });
+        if (vendedorExistente) {
+            return res.status(400).json({ msg: 'Este email já está em uso.' });
+        }
+
+        // Validação de Formato da Senha
+        const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!senhaRegex.test(senha)) {
+            return res.status(400).json({
+                msg: 'A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, um número e um caractere especial.'
+            });
+        }
         try {
             const vendedor = new Vendedor(req.body);
             await vendedor.save();
