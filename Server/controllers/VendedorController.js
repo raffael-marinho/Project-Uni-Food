@@ -35,12 +35,14 @@ class VendedorController {
             return res.status(400).json({ msg: 'ID inválido' });
         }
 
-        // if (req.user._id !== id) {
-        //     return res.status(403).json({ msg: 'Você não tem permissão para acessar esse vendedor.' });
-        // }
-
         try {
+
+            if (req.user.id !== id) {
+                return res.status(403).json({ msg: 'Você não tem permissão para acessar este vendedor.' });
+            }
+
             const vendedor = await Vendedor.findById(id, '-senha');
+
             if (!vendedor) {
                 return res.status(404).json({ msg: 'Usuário não encontrado' });
             }
