@@ -1,4 +1,5 @@
 const Vendedor = require('../models/Vendedor');
+const mongoose = require('mongoose');
 
 // Validação de Dados Obrigatórios
 const validarDadosObrigatorios = (req, res, next) => {
@@ -71,11 +72,13 @@ const validarFormatoSenha = (req, res, next) => {
     next();
 };
 
-// Validação de Token e Permissão
+// Validação de Id, Token e Permissão
 const validarPermissao = (req, res, next) => {
     const { id } = req.params;
 
-    if (req.user.id !== id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ msg: 'ID inválido' });
+    } else if (req.user.id !== id) {
         return res.status(403).json({ msg: 'Permissão negada.' });
     }
 
@@ -89,5 +92,5 @@ module.exports = {
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
-    validarPermissao
+    validarPermissao,
 };
