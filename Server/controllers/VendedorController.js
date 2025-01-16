@@ -17,11 +17,7 @@ class VendedorController {
     async getAllVendedor(req, res) {
         try {
             const vendedores = await Vendedor.find().select('-senha');
-
-            if (vendedores.length === 0) {
-                return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
-            }
-
+            
             return res.status(200).json(vendedores);
         } catch (error) {
             return res.status(500).json({ error: 'Erro ao recuperar vendedores.' });
@@ -30,22 +26,22 @@ class VendedorController {
 
     async getOneVendedor(req, res) {
         const id = req.params.id;
-        
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ msg: 'ID inválido' });
-        }
+
+        // if (!mongoose.Types.ObjectId.isValid(id)) {
+        //     return res.status(400).json({ msg: 'ID inválido' });
+        // }
 
         try {
 
-            if (req.user.id !== id) {
-                return res.status(403).json({ msg: 'Você não tem permissão para acessar este vendedor.' });
-            }
+            // if (req.user.id !== id) {
+            //     return res.status(403).json({ msg: 'Você não tem permissão para acessar este vendedor.' });
+            // }
 
             const vendedor = await Vendedor.findById(id, '-senha');
 
-            if (!vendedor) {
-                return res.status(404).json({ msg: 'Usuário não encontrado' });
-            }
+            // if (!vendedor) {
+            //     return res.status(404).json({ msg: 'Usuário não encontrado' });
+            // }
 
             res.status(200).json(vendedor);
         } catch (error) {
@@ -56,15 +52,15 @@ class VendedorController {
     async updateVendedor(req, res) {
         const id = req.params.id;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ msg: 'ID inválido' });
-        }
+        // if (!mongoose.Types.ObjectId.isValid(id)) {
+        //     return res.status(400).json({ msg: 'ID inválido' });
+        // }
 
         try {
             const vendedor = await Vendedor.findById(id);
-            if (!vendedor) {
-                return res.status(404).json({ msg: 'Usuário não encontrado.' });
-            }
+            // if (!vendedor) {
+            //     return res.status(404).json({ msg: 'Usuário não encontrado.' });
+            // }
 
             Object.assign(vendedor, req.body);
 
@@ -77,22 +73,12 @@ class VendedorController {
     }
 
     async deleteVendedor(req, res) {
-        const id = req.params.id;
-
-        // if (req.user._id !== id) {
-        //     return res.status(403).json({ msg: 'Você não tem permissão para excluir este vendedor.' });
-        // }
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ msg: 'ID inválido' });
-        }
-
         try {
-            const vendedor = await Vendedor.findByIdAndDelete(id);
+            // const vendedor = await Vendedor.findByIdAndDelete(id);
 
-            if (!vendedor) {
-                return res.status(404).json({ msg: 'Usuário não encontrado para ser deletado.' });
-            }
+            // if (!vendedor) {
+            //     return res.status(404).json({ msg: 'Usuário não encontrado para ser deletado.' });
+            // }
 
             return res.status(200).json({ msg: 'Vendedor deletado com sucesso.', vendedor });
         } catch (error) {

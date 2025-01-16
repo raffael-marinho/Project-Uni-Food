@@ -10,31 +10,49 @@ const {
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
-    validarPermissao
+    validarId,
+    validarPermissao,
+    validarExistenciaVendedor,
 } = require('../middlewares/validacoes');
 
 // Rota privada para pegar os detalhes do vendedor
 
-router.post("/", validarDadosObrigatorios,
+router.post("/",
+    validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
     VendedorController.postVendedor);
 
-router.get("/", VendedorController.getAllVendedor);
+router.get("/",
+    validarExistenciaVendedor,
+    VendedorController.getAllVendedor);
 
-router.get('/:id', checkToken, VendedorController.getOneVendedor);
-
-router.put('/:id', checkToken,
+router.get('/:id',
+    checkToken,
+    validarExistenciaVendedor,
+    validarId,
     validarPermissao,
+    VendedorController.getOneVendedor);
+
+router.put('/:id',
+    checkToken,
+    validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
+    validarId,
+    validarPermissao,
     VendedorController.updateVendedor);
 
-router.delete('/:id', checkToken, VendedorController.deleteVendedor);
+router.delete('/:id',
+    checkToken,
+    validarExistenciaVendedor,
+    validarId,
+    validarPermissao,
+    VendedorController.deleteVendedor);
 
 
 module.exports = router;

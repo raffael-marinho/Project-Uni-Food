@@ -72,18 +72,62 @@ const validarFormatoSenha = (req, res, next) => {
     next();
 };
 
-// Validação de Id, Token e Permissão
-const validarPermissao = (req, res, next) => {
+// Validação de ID
+const validarId = (req, res, next) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ msg: 'ID inválido' });
-    } else if (req.user.id !== id) {
+        return res.status(400).json({ msg: 'ID inválido.' });
+    }
+
+    next();
+};
+
+// Validação de Permissão
+const validarPermissao = (req, res, next) => {
+    const { id } = req.params;
+
+    if (req.user.id !== id) {
         return res.status(403).json({ msg: 'Permissão negada.' });
     }
 
     next();
 };
+
+// Validação de Existência do Vendedor
+const validarExistenciaVendedor = async (req, res, next) => {
+    try {
+        const vendedores = await Vendedor.find().select('-senha');
+
+        if (vendedores.length === 0) {
+            return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
+        }
+
+        next();
+    } catch (error) {
+        console.error('Erro ao buscar vendedor no banco:', error.message);
+        return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
+    }
+};
+
+// Validação de Relacionamentos do Vendedor
+// const validarRelacionamentos = async (req, res, next) => {
+//     const { id } = req.params;
+
+//     try {
+//         const vendedor = await Vendedor.findById(id).populate('produtos');
+//         if (vendedor && vendedor.produtos.length > 0) {
+//             return res.status(400).json({
+//                 msg: 'O vendedor possui produtos associados. Exclua ou reatribua os produtos antes de continuar.'
+//             });
+//         }
+
+//         next();
+//     } catch (error) {
+//         console.error('Erro ao verificar relacionamentos:', error.message);
+//         return res.status(500).json({ msg: 'Erro ao verificar relacionamentos.', error: error.message });
+//     }
+// };
 
 // Exportar as funções
 module.exports = {
@@ -92,5 +136,8 @@ module.exports = {
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
+    validarId,
     validarPermissao,
+    validarExistenciaVendedor,
+    // validarRelacionamentos,
 };
