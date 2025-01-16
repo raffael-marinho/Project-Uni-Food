@@ -123,7 +123,6 @@ const validarExistenciaEspecifica = async (req, res, next) => {
 
         next();
     } catch (error) {
-        console.error('Erro ao verificar a existência do vendedor:', error.message);
         return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
     }
 };

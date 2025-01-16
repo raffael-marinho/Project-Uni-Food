@@ -31,6 +31,7 @@ router.get("/",
     VendedorController.getAllVendedor);
 
 router.get('/:id',
+    validarId,
     checkToken,
     validarId,
     validarPermissao,
