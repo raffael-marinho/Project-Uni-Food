@@ -13,6 +13,7 @@ const {
     validarId,
     validarPermissao,
     validarExistenciaVendedor,
+    validarExistenciaEspecifica,
 } = require('../middlewares/validacoes');
 
 // Rota privada para pegar os detalhes do vendedor
@@ -37,13 +38,13 @@ router.get('/:id',
 
 router.put('/:id',
     checkToken,
+    validarExistenciaEspecifica,
+    validarPermissao,
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
-    validarId,
-    validarPermissao,
     VendedorController.updateVendedor);
 
 router.delete('/:id',

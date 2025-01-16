@@ -36,22 +36,11 @@ class VendedorController {
     }
 
     async updateVendedor(req, res) {
-        const id = req.params.id;
-
-        // if (!mongoose.Types.ObjectId.isValid(id)) {
-        //     return res.status(400).json({ msg: 'ID inválido' });
-        // }
-
         try {
+            const id = req.params.id;
             const vendedor = await Vendedor.findById(id);
-            // if (!vendedor) {
-            //     return res.status(404).json({ msg: 'Usuário não encontrado.' });
-            // }
-
             Object.assign(vendedor, req.body);
-
             await vendedor.save();
-
             return res.status(200).json({ msg: 'Vendedor atualizado com sucesso.', vendedor });
         } catch (error) {
             return res.status(500).json({ error: 'Erro ao atualizar o vendedor.', details: error.message });

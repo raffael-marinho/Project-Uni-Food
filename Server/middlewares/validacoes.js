@@ -110,6 +110,23 @@ const validarExistenciaVendedor = async (req, res, next) => {
     }
 };
 
+const validarExistenciaEspecifica = async (req, res, next) => {
+    try {
+        const { id } = req.params; 
+        const vendedor = await Vendedor.findById(id).select('-senha');
+
+        if (!vendedor) {
+            return res.status(404).json({ msg: 'Usuário não encontrado.' });
+        }
+        req.vendedor = vendedor;
+
+        next();
+    } catch (error) {
+        console.error('Erro ao verificar a existência do vendedor:', error.message);
+        return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
+    }
+};
+
 // Validação de Relacionamentos do Vendedor
 // const validarRelacionamentos = async (req, res, next) => {
 //     const { id } = req.params;
@@ -139,5 +156,6 @@ module.exports = {
     validarId,
     validarPermissao,
     validarExistenciaVendedor,
+    validarExistenciaEspecifica,
     // validarRelacionamentos,
 };
