@@ -49,8 +49,7 @@ router.put('/:id',
 
 router.delete('/:id',
     checkToken,
-    validarExistenciaVendedor,
-    validarId,
+    validarExistenciaEspecifica,
     validarPermissao,
     VendedorController.deleteVendedor);
 

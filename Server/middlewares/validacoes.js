@@ -110,9 +110,10 @@ const validarExistenciaVendedor = async (req, res, next) => {
     }
 };
 
+// Validação de Existência do Vendedor pelo Id
 const validarExistenciaEspecifica = async (req, res, next) => {
     try {
-        const { id } = req.params; 
+        const { id } = req.params;
         const vendedor = await Vendedor.findById(id).select('-senha');
 
         if (!vendedor) {
@@ -127,25 +128,6 @@ const validarExistenciaEspecifica = async (req, res, next) => {
     }
 };
 
-// Validação de Relacionamentos do Vendedor
-// const validarRelacionamentos = async (req, res, next) => {
-//     const { id } = req.params;
-
-//     try {
-//         const vendedor = await Vendedor.findById(id).populate('produtos');
-//         if (vendedor && vendedor.produtos.length > 0) {
-//             return res.status(400).json({
-//                 msg: 'O vendedor possui produtos associados. Exclua ou reatribua os produtos antes de continuar.'
-//             });
-//         }
-
-//         next();
-//     } catch (error) {
-//         console.error('Erro ao verificar relacionamentos:', error.message);
-//         return res.status(500).json({ msg: 'Erro ao verificar relacionamentos.', error: error.message });
-//     }
-// };
-
 // Exportar as funções
 module.exports = {
     validarDadosObrigatorios,
@@ -157,5 +139,4 @@ module.exports = {
     validarPermissao,
     validarExistenciaVendedor,
     validarExistenciaEspecifica,
-    // validarRelacionamentos,
 };

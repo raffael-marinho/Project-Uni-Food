@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Vendedor = require('../models/Vendedor');
 
 class VendedorController {
@@ -49,11 +48,8 @@ class VendedorController {
 
     async deleteVendedor(req, res) {
         try {
-            // const vendedor = await Vendedor.findByIdAndDelete(id);
-
-            // if (!vendedor) {
-            //     return res.status(404).json({ msg: 'Usuário não encontrado para ser deletado.' });
-            // }
+            const { id } = req.params;
+            const vendedor = await Vendedor.findByIdAndDelete(id);
 
             return res.status(200).json({ msg: 'Vendedor deletado com sucesso.', vendedor });
         } catch (error) {
