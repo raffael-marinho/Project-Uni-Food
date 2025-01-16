@@ -31,7 +31,6 @@ router.get("/",
 
 router.get('/:id',
     checkToken,
-    validarExistenciaVendedor,
     validarId,
     validarPermissao,
     VendedorController.getOneVendedor);
