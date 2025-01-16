@@ -4,10 +4,22 @@ const express = require('express');
 const router = express.Router();
 const checkToken = require('../middlewares/authMiddleware');
 const VendedorController = require('../controllers/VendedorController');
+const {
+    validarDadosObrigatorios,
+    validarComprimento,
+    validarDominioEmail,
+    validarEmailUnico,
+    validarFormatoSenha
+} = require('../middlewares/validacoes');
 
 // Rota privada para pegar os detalhes do vendedor
 
-router.post("/", VendedorController.postVendedor);
+router.post("/", validarDadosObrigatorios,
+    validarComprimento,
+    validarDominioEmail,
+    validarEmailUnico,
+    validarFormatoSenha,
+    VendedorController.postVendedor);
 
 router.get("/", VendedorController.getAllVendedor);
 
