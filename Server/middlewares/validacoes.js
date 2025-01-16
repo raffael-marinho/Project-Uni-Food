@@ -41,10 +41,14 @@ const validarDominioEmail = (req, res, next) => {
 // Validação de Email Único
 const validarEmailUnico = async (req, res, next) => {
     const { email } = req.body;
+    const { id } = req.params;
+
     try {
-        const vendedorExistente = await Vendedor.findOne({ email });
-        if (vendedorExistente) {
-            return res.status(400).json({ msg: 'Este email já está em uso.' });
+        if (email) {
+            const vendedorExistente = await Vendedor.findOne({ email });
+            if (vendedorExistente && vendedorExistente._id.toString() !== id) {
+                return res.status(400).json({ msg: 'Este email já está em uso.' });
+            }
         }
         next();
     } catch (error) {
@@ -67,11 +71,23 @@ const validarFormatoSenha = (req, res, next) => {
     next();
 };
 
+// Validação de Token e Permissão
+const validarPermissao = (req, res, next) => {
+    const { id } = req.params;
+
+    if (req.user.id !== id) {
+        return res.status(403).json({ msg: 'Permissão negada.' });
+    }
+
+    next();
+};
+
 // Exportar as funções
 module.exports = {
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
-    validarFormatoSenha
+    validarFormatoSenha,
+    validarPermissao
 };

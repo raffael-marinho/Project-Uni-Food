@@ -9,7 +9,8 @@ const {
     validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
-    validarFormatoSenha
+    validarFormatoSenha,
+    validarPermissao
 } = require('../middlewares/validacoes');
 
 // Rota privada para pegar os detalhes do vendedor
@@ -25,7 +26,13 @@ router.get("/", VendedorController.getAllVendedor);
 
 router.get('/:id', checkToken, VendedorController.getOneVendedor);
 
-router.put('/:id', checkToken, VendedorController.updateVendedor);
+router.put('/:id', checkToken,
+    validarPermissao,
+    validarComprimento,
+    validarDominioEmail,
+    validarEmailUnico,
+    validarFormatoSenha,
+    VendedorController.updateVendedor);
 
 router.delete('/:id', checkToken, VendedorController.deleteVendedor);
 

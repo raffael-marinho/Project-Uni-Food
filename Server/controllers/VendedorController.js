@@ -60,10 +60,6 @@ class VendedorController {
             return res.status(400).json({ msg: 'ID inválido' });
         }
 
-        // if (req.user._id !== id) {
-        //     return res.status(403).json({ msg: 'Você não tem permissão para atualizar esse vendedor.' });
-        // }
-
         try {
             const vendedor = await Vendedor.findById(id);
             if (!vendedor) {
