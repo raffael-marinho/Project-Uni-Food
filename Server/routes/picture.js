@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../config/multer');
-const pictureController = require('../controllers/picturecontroller');
+const pictureController = require('../controllers/pictureController');
 
 
 
