@@ -36,7 +36,7 @@ const vendedorSchema = new mongoose.Schema({
   }],
 }, { timestamps: true });
 
-/*
+
 // Hash da senha antes de salvar
 vendedorSchema.pre('save', async function (next) {
   if (this.isModified('senha')) {
@@ -49,5 +49,5 @@ vendedorSchema.pre('save', async function (next) {
 vendedorSchema.methods.comparePassword = function (senha) {
   return bcrypt.compare(senha, this.senha);
 };
-*/
+
 module.exports = mongoose.model('Vendedor', vendedorSchema);
