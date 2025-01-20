@@ -114,7 +114,7 @@ const validarExistencia = (tipo) => {
                 return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
             }
 
-            next(); // Prossegue para a próxima etapa do middleware ou rota
+            next();
         } catch (error) {
             console.error(`Erro ao verificar existência de ${tipo} no banco:`, error.message);
             return res.status(500).json({ msg: `Erro ao verificar existência de ${tipo}.`, error: error.message });
@@ -124,20 +124,34 @@ const validarExistencia = (tipo) => {
 
 
 // Validação de Existência do Vendedor pelo Id
-const validarExistenciaEspecifica = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const vendedor = await Vendedor.findById(id).select('-senha');
+const validarExistenciaEspecifica = (tipo) => {
+    return async (req, res, next) => {
+        try {
+            const { id } = req.params;
 
-        if (!vendedor) {
-            return res.status(404).json({ msg: 'Usuário não encontrado.' });
+            if (tipo === 'vendedor') {
+                const vendedor = await Vendedor.findById(id).select('-senha');
+                if (!vendedor) {
+                    return res.status(404).json({ msg: 'Vendedor não encontrado.' });
+                }
+                req.vendedor = vendedor;
+            }
+            else if (tipo === 'cliente') {
+                const cliente = await Cliente.findById(id).select('-senha');
+                if (!cliente) {
+                    return res.status(404).json({ msg: 'Cliente não encontrado.' });
+                }
+                req.cliente = cliente;
+            } else {
+                return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
+            }
+
+            next();
+        } catch (error) {
+            console.error(`Erro ao verificar existência de ${tipo} no banco:`, error.message);
+            return res.status(500).json({ msg: `Erro ao verificar existência de ${tipo}.`, error: error.message });
         }
-        req.vendedor = vendedor;
-
-        next();
-    } catch (error) {
-        return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
-    }
+    };
 };
 
 // Exportar as funções
