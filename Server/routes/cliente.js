@@ -26,7 +26,7 @@ router.post("/",
 
 router.get("/",
     validarExistencia('cliente'),
-    ClienteController.getAllCliente);
+    ClienteController.getAllClientes);
 
 router.get('/:id',
     validarId,
