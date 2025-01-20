@@ -1,4 +1,6 @@
 const Vendedor = require('../models/Vendedor');
+const Cliente = require('../models/Cliente');
+
 const mongoose = require('mongoose');
 
 // Validação de Dados Obrigatórios
@@ -94,21 +96,32 @@ const validarPermissao = (req, res, next) => {
     next();
 };
 
-// Validação de Existência do Vendedor
-const validarExistenciaVendedor = async (req, res, next) => {
-    try {
-        const vendedores = await Vendedor.find().select('-senha');
+// Validação de Existência do Vendedor e cliente
+const validarExistencia = (tipo) => {
+    return async (req, res, next) => {
+        try {
+            if (tipo === 'vendedor') {
+                const vendedorExiste = await Vendedor.exists({});
+                if (!vendedorExiste) {
+                    return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
+                }
+            } else if (tipo === 'cliente') {
+                const clienteExiste = await Cliente.exists({});
+                if (!clienteExiste) {
+                    return res.status(404).json({ msg: 'Nenhum cliente encontrado.' });
+                }
+            } else {
+                return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
+            }
 
-        if (vendedores.length === 0) {
-            return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
+            next(); // Prossegue para a próxima etapa do middleware ou rota
+        } catch (error) {
+            console.error(`Erro ao verificar existência de ${tipo} no banco:`, error.message);
+            return res.status(500).json({ msg: `Erro ao verificar existência de ${tipo}.`, error: error.message });
         }
-
-        next();
-    } catch (error) {
-        console.error('Erro ao buscar vendedor no banco:', error.message);
-        return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
-    }
+    };
 };
+
 
 // Validação de Existência do Vendedor pelo Id
 const validarExistenciaEspecifica = async (req, res, next) => {
@@ -136,6 +149,6 @@ module.exports = {
     validarFormatoSenha,
     validarId,
     validarPermissao,
-    validarExistenciaVendedor,
+    validarExistencia,
     validarExistenciaEspecifica,
 };

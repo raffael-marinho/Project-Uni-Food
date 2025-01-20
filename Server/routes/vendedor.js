@@ -12,7 +12,7 @@ const {
     validarFormatoSenha,
     validarId,
     validarPermissao,
-    validarExistenciaVendedor,
+    validarExistencia,
     validarExistenciaEspecifica,
 } = require('../middlewares/validacoes');
 
@@ -27,7 +27,7 @@ router.post("/",
     VendedorController.postVendedor);
 
 router.get("/",
-    validarExistenciaVendedor,
+    validarExistencia('vendedor'),
     VendedorController.getAllVendedor);
 
 router.get('/:id',
