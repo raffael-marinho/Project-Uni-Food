@@ -31,7 +31,7 @@ const clienteSchema = new mongoose.Schema({
   },
   imagemPerfil: {
     type: String, // Caminho ou URL da imagem
-    default: '',  
+    default: '',
   },
   pedidos: [{
     type: mongoose.Schema.Types.ObjectId,

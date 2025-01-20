@@ -77,8 +77,8 @@ router.post("/login", async (req, res) => {
         const token = jwt.sign({ id: vendedor._id }, secret);
 
         // Responder com token e dados do usuário
-        res.status(200).json({ 
-            msg: 'Autenticação realizada com sucesso', 
+        res.status(200).json({
+            msg: 'Autenticação realizada com sucesso',
             token,
             vendedor: {
                 id: vendedor._id,
