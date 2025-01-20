@@ -1,3 +1,5 @@
+// routes/cliente.js
+
 const express = require('express');
 const router = express.Router();
 const checkToken = require('../middlewares/authMiddleware');
@@ -14,43 +16,44 @@ const {
     validarExistenciaEspecifica,
 } = require('../middlewares/validacoes');
 
-// Rota para criar um novo cliente
+// Rota para cadastrar um novo cliente
 router.post("/",
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
-    validarEmailUnico,
+    validarEmailUnico('cliente'),
     validarFormatoSenha,
     ClienteController.postCliente);
 
-// Rota para listar todos os clientes
+// Rota para pegar todos os clientes
 router.get("/",
-    validarExistencia,
-    ClienteController.getAllClientes);
+    validarExistencia('cliente'),
+    ClienteController.getAllCliente);
 
-// Rota para buscar um cliente por ID
+// Rota para pegar os detalhes de um cliente específico
 router.get('/:id',
     validarId,
     checkToken,
+    validarId,
     validarPermissao,
     ClienteController.getOneCliente);
 
 // Rota para atualizar um cliente
 router.put('/:id',
     checkToken,
-    validarExistenciaEspecifica,
+    validarExistenciaEspecifica('cliente'),
     validarPermissao,
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
-    validarEmailUnico,
+    validarEmailUnico('cliente'),
     validarFormatoSenha,
     ClienteController.updateCliente);
 
 // Rota para deletar um cliente
 router.delete('/:id',
     checkToken,
-    validarExistenciaEspecifica,
+    validarExistenciaEspecifica('cliente'),
     validarPermissao,
     ClienteController.deleteCliente);
 
