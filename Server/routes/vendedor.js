@@ -22,7 +22,7 @@ router.post("/",
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
-    validarEmailUnico,
+    validarEmailUnico('vendedor'),
     validarFormatoSenha,
     VendedorController.postVendedor);
 
@@ -44,7 +44,7 @@ router.put('/:id',
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
-    validarEmailUnico,
+    validarEmailUnico('vendedor'),
     validarFormatoSenha,
     VendedorController.updateVendedor);
 

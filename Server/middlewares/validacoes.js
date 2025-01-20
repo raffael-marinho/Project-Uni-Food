@@ -42,23 +42,36 @@ const validarDominioEmail = (req, res, next) => {
 };
 
 // Validação de Email Único
-const validarEmailUnico = async (req, res, next) => {
-    const { email } = req.body;
-    const { id } = req.params;
+const validarEmailUnico = (tipo) => {
+    return async (req, res, next) => {
+        const { email } = req.body;
+        const { id } = req.params;
 
-    try {
-        if (email) {
-            const vendedorExistente = await Vendedor.findOne({ email });
-            if (vendedorExistente && vendedorExistente._id.toString() !== id) {
-                return res.status(400).json({ msg: 'Este email já está em uso.' });
+        try {
+            if (email) {
+                if (tipo === 'vendedor') {
+                    const vendedorExistente = await Vendedor.findOne({ email });
+                    if (vendedorExistente && vendedorExistente._id.toString() !== id) {
+                        return res.status(400).json({ msg: 'Este email já está em uso por outro vendedor.' });
+                    }
+                }
+                else if (tipo === 'cliente') {
+                    const clienteExistente = await Cliente.findOne({ email });
+                    if (clienteExistente && clienteExistente._id.toString() !== id) {
+                        return res.status(400).json({ msg: 'Este email já está em uso por outro cliente.' });
+                    }
+                } else {
+                    return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
+                }
             }
+            next();  // Passa para o próximo middleware ou controlador
+        } catch (error) {
+            console.error(`Erro ao verificar email no banco:`, error.message);
+            return res.status(500).json({ msg: 'Erro ao verificar o email.', error: error.message });
         }
-        next();
-    } catch (error) {
-        console.error('Erro ao verificar email no banco:', error.message);
-        return res.status(500).json({ msg: 'Erro ao verificar o email.', error: error.message });
-    }
+    };
 };
+
 
 // Validação de Formato da Senha
 const validarFormatoSenha = (req, res, next) => {
