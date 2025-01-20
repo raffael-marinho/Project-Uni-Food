@@ -16,8 +16,6 @@ const {
     validarExistenciaEspecifica,
 } = require('../middlewares/validacoes');
 
-// Rota privada para pegar os detalhes do vendedor
-
 router.post("/",
     validarDadosObrigatorios,
     validarComprimento,
