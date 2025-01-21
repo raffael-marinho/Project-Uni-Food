@@ -1,9 +1,9 @@
-// routes/vendedor.js
+// routes/cliente.js
 
 const express = require('express');
 const router = express.Router();
 const checkToken = require('../middlewares/authMiddleware');
-const VendedorController = require('../controllers/VendedorController');
+const ClienteController = require('../controllers/ClienteController');
 const {
     validarDadosObrigatorios,
     validarComprimento,
@@ -20,37 +20,36 @@ router.post("/",
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
-    validarEmailUnico('vendedor'),
+    validarEmailUnico('cliente'),
     validarFormatoSenha,
-    VendedorController.postVendedor);
+    ClienteController.postCliente);
 
 router.get("/",
-    validarExistencia('vendedor'),
-    VendedorController.getAllVendedor);
+    validarExistencia('cliente'),
+    ClienteController.getAllClientes);
 
 router.get('/:id',
     validarId,
     checkToken,
     validarId,
     validarPermissao,
-    VendedorController.getOneVendedor);
+    ClienteController.getOneCliente);
 
 router.put('/:id',
     checkToken,
-    validarExistenciaEspecifica('vendedor'),
+    validarExistenciaEspecifica('cliente'),
     validarPermissao,
     validarDadosObrigatorios,
     validarComprimento,
     validarDominioEmail,
-    validarEmailUnico('vendedor'),
+    validarEmailUnico('cliente'),
     validarFormatoSenha,
-    VendedorController.updateVendedor);
+    ClienteController.updateCliente);
 
 router.delete('/:id',
     checkToken,
-    validarExistenciaEspecifica('vendedor'),
+    validarExistenciaEspecifica('cliente'),
     validarPermissao,
-    VendedorController.deleteVendedor);
-
+    ClienteController.deleteCliente);
 
 module.exports = router;

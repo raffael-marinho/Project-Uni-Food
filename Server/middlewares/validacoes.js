@@ -1,4 +1,6 @@
 const Vendedor = require('../models/Vendedor');
+const Cliente = require('../models/Cliente');
+
 const mongoose = require('mongoose');
 
 // Validação de Dados Obrigatórios
@@ -40,23 +42,36 @@ const validarDominioEmail = (req, res, next) => {
 };
 
 // Validação de Email Único
-const validarEmailUnico = async (req, res, next) => {
-    const { email } = req.body;
-    const { id } = req.params;
+const validarEmailUnico = (tipo) => {
+    return async (req, res, next) => {
+        const { email } = req.body;
+        const { id } = req.params;
 
-    try {
-        if (email) {
-            const vendedorExistente = await Vendedor.findOne({ email });
-            if (vendedorExistente && vendedorExistente._id.toString() !== id) {
-                return res.status(400).json({ msg: 'Este email já está em uso.' });
+        try {
+            if (email) {
+                if (tipo === 'vendedor') {
+                    const vendedorExistente = await Vendedor.findOne({ email });
+                    if (vendedorExistente && vendedorExistente._id.toString() !== id) {
+                        return res.status(400).json({ msg: 'Este email já está em uso por outro vendedor.' });
+                    }
+                }
+                else if (tipo === 'cliente') {
+                    const clienteExistente = await Cliente.findOne({ email });
+                    if (clienteExistente && clienteExistente._id.toString() !== id) {
+                        return res.status(400).json({ msg: 'Este email já está em uso por outro cliente.' });
+                    }
+                } else {
+                    return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
+                }
             }
+            next();  // Passa para o próximo middleware ou controlador
+        } catch (error) {
+            console.error(`Erro ao verificar email no banco:`, error.message);
+            return res.status(500).json({ msg: 'Erro ao verificar o email.', error: error.message });
         }
-        next();
-    } catch (error) {
-        console.error('Erro ao verificar email no banco:', error.message);
-        return res.status(500).json({ msg: 'Erro ao verificar o email.', error: error.message });
-    }
+    };
 };
+
 
 // Validação de Formato da Senha
 const validarFormatoSenha = (req, res, next) => {
@@ -94,37 +109,62 @@ const validarPermissao = (req, res, next) => {
     next();
 };
 
-// Validação de Existência do Vendedor
-const validarExistenciaVendedor = async (req, res, next) => {
-    try {
-        const vendedores = await Vendedor.find().select('-senha');
+// Validação de Existência do Vendedor e cliente
+const validarExistencia = (tipo) => {
+    return async (req, res, next) => {
+        try {
+            if (tipo === 'vendedor') {
+                const vendedorExiste = await Vendedor.exists({});
+                if (!vendedorExiste) {
+                    return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
+                }
+            } else if (tipo === 'cliente') {
+                const clienteExiste = await Cliente.exists({});
+                if (!clienteExiste) {
+                    return res.status(404).json({ msg: 'Nenhum cliente encontrado.' });
+                }
+            } else {
+                return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
+            }
 
-        if (vendedores.length === 0) {
-            return res.status(404).json({ msg: 'Nenhum vendedor encontrado.' });
+            next();
+        } catch (error) {
+            console.error(`Erro ao verificar existência de ${tipo} no banco:`, error.message);
+            return res.status(500).json({ msg: `Erro ao verificar existência de ${tipo}.`, error: error.message });
         }
-
-        next();
-    } catch (error) {
-        console.error('Erro ao buscar vendedor no banco:', error.message);
-        return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
-    }
+    };
 };
 
+
 // Validação de Existência do Vendedor pelo Id
-const validarExistenciaEspecifica = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const vendedor = await Vendedor.findById(id).select('-senha');
+const validarExistenciaEspecifica = (tipo) => {
+    return async (req, res, next) => {
+        try {
+            const { id } = req.params;
 
-        if (!vendedor) {
-            return res.status(404).json({ msg: 'Usuário não encontrado.' });
+            if (tipo === 'vendedor') {
+                const vendedor = await Vendedor.findById(id).select('-senha');
+                if (!vendedor) {
+                    return res.status(404).json({ msg: 'Vendedor não encontrado.' });
+                }
+                req.vendedor = vendedor;
+            }
+            else if (tipo === 'cliente') {
+                const cliente = await Cliente.findById(id).select('-senha');
+                if (!cliente) {
+                    return res.status(404).json({ msg: 'Cliente não encontrado.' });
+                }
+                req.cliente = cliente;
+            } else {
+                return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
+            }
+
+            next();
+        } catch (error) {
+            console.error(`Erro ao verificar existência de ${tipo} no banco:`, error.message);
+            return res.status(500).json({ msg: `Erro ao verificar existência de ${tipo}.`, error: error.message });
         }
-        req.vendedor = vendedor;
-
-        next();
-    } catch (error) {
-        return res.status(500).json({ msg: 'Erro ao verificar a existência do vendedor.', error: error.message });
-    }
+    };
 };
 
 // Exportar as funções
@@ -136,6 +176,6 @@ module.exports = {
     validarFormatoSenha,
     validarId,
     validarPermissao,
-    validarExistenciaVendedor,
+    validarExistencia,
     validarExistenciaEspecifica,
 };
