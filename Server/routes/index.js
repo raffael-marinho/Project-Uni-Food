@@ -3,6 +3,7 @@ const pictureRouter = require("./picture");
 const authRouter = require('./auth');
 const vendedorRouter = require('./vendedor');
 const clienteRouter = require('./cliente');
+const produtoRouter = require('./produtos');
 
 
 const router = express.Router();
@@ -13,10 +14,11 @@ router.get('/', (req, res) => {
 });
 
 // Usar as outras rotas
-router.use('/cliente', clienteRouter);    // Rota de cliente
+router.use('/cliente', clienteRouter);  // Rota de cliente
 router.use('/vendedor', vendedorRouter);    // Rota de vendedor
-router.use('/pictures', pictureRouter);     // Rota de imagens
-router.use('/auth', authRouter);            // Rota de autenticação
+router.use('/produto', produtoRouter);  // Rota de produto
+router.use('/pictures', pictureRouter); // Rota de imagens
+router.use('/auth', authRouter);    // Rota de autenticação
 
 
 module.exports = router;
