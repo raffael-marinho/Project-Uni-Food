@@ -1,5 +1,6 @@
 const Vendedor = require('../models/Vendedor');
 const Cliente = require('../models/Cliente');
+const Produto = require("../models/Produto");
 
 const mongoose = require('mongoose');
 
@@ -167,7 +168,41 @@ const validarExistenciaEspecifica = (tipo) => {
     };
 };
 
-// Exportar as funções
+// Validação: Verifica se existem produtos
+const validarExistenciaDeProdutos = async (req, res, next) => {
+    try {
+        const produtos = await Produto.find();
+        if (produtos.length === 0) {
+            return res.status(404).json({ msg: 'Nenhum produto encontrado.' });
+        }
+        req.produtos = produtos;
+        next();
+    } catch (error) {
+        return res.status(500).json({ error: 'Erro ao validar a existência de produtos.', details: error.message });
+    }
+};
+
+// Validação: Verifica se o ID do produto é válido e se o produto existe
+const validarProdutoPorId = async (req, res, next) => {
+    const { id } = req.params;
+
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({ error: 'ID do produto inválido.' });
+    }
+
+    try {
+        const produto = await Produto.findById(id).populate('vendedor', '-senha');
+        if (!produto) {
+            return res.status(404).json({ msg: 'Produto não encontrado.' });
+        }
+        req.produto = produto;
+        next();
+    } catch (error) {
+        return res.status(500).json({ error: 'Erro ao validar o produto por ID.', details: error.message });
+    }
+};
+
+
 module.exports = {
     validarDadosObrigatorios,
     validarComprimento,
@@ -178,4 +213,6 @@ module.exports = {
     validarPermissao,
     validarExistencia,
     validarExistenciaEspecifica,
+    validarExistenciaDeProdutos,
+    validarProdutoPorId,
 };
