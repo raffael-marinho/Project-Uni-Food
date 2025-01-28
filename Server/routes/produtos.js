@@ -1,21 +1,40 @@
 const express = require('express');
 const router = express.Router();
+const checkToken = require('../middlewares/authMiddleware');
+
 const ProdutoController = require('../controllers/ProdutoController');
 
-const { validarExistenciaDeProdutos,
+const {
+    validarExistenciaDeProdutos,
     validarProdutoPorId,
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
+    validarFormatoPrecoProduto,
 } = require('../middlewares/validacoes');
 
-router.post('/', validarDadosObrigatoriosProduto, validarTiposDeDadosProduto, ProdutoController.postProduto);
+router.post('/',
+    checkToken,
+    validarDadosObrigatoriosProduto,
+    validarTiposDeDadosProduto,
+    validarFormatoPrecoProduto,
+    ProdutoController.postProduto);
 
-router.get('/', ProdutoController.getAllProdutos);
+router.get('/',
+    validarExistenciaDeProdutos,
+    validarProdutoPorId,
+    ProdutoController.getAllProdutos);
 
-router.get('/:id', ProdutoController.getOneProduto);
+router.get('/:id',
+    validarExistenciaDeProdutos,
+    validarProdutoPorId,
+    ProdutoController.getOneProduto);
 
 router.put('/:id', ProdutoController.updateProduto);
 
-router.delete('/:id', ProdutoController.deleteProduto);
+router.delete('/:id',
+    checkToken,
+    validarProdutoPorId,
+    validarExistenciaDeProdutos,
+    ProdutoController.deleteProduto);
 
 module.exports = router;
