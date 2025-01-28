@@ -37,6 +37,7 @@ router.put('/:id',
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
     validarFormatoPrecoProduto,
+    validarPermissaoProduto,
     ProdutoController.updateProduto);
 
 router.delete('/:id',
