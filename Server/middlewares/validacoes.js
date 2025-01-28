@@ -263,6 +263,26 @@ const validarExistenciaVendedorProduto = async (req, res, next) => {
     }
 };
 
+//Verificar se o vendedor autenticado é o dono do produto
+const validarPermissaoProduto = async (req, res, next) => {
+    const { id } = req.params;
+    const vendedorAutenticado = req.user;
+
+    try {
+        const produto = await Produto.findById(id);
+
+        if (produto.vendedor.toString() !== vendedorAutenticado.id.toString()) {
+            return res.status(403).json({ msg: 'Você não tem permissão para excluir este produto.' });
+        }
+
+        req.produto = produto;
+        next();
+    } catch (error) {
+
+        return res.status(500).json({ msg: 'Erro interno ao validar permissão.', error: error.message });
+    }
+};
+
 module.exports = {
     validarDadosObrigatorios,
     validarComprimento,
@@ -279,4 +299,5 @@ module.exports = {
     validarDadosObrigatoriosProduto,
     validarFormatoPrecoProduto,
     validarExistenciaVendedorProduto,
+    validarPermissaoProduto
 };

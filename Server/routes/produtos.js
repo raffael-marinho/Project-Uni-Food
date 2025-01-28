@@ -11,6 +11,7 @@ const {
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
     validarFormatoPrecoProduto,
+    validarPermissaoProduto,
 } = require('../middlewares/validacoes');
 
 router.post('/',
@@ -42,6 +43,7 @@ router.delete('/:id',
     checkToken,
     validarProdutoPorId,
     validarExistenciaDeProdutos,
+    validarPermissaoProduto,
     ProdutoController.deleteProduto);
 
 module.exports = router;
