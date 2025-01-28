@@ -168,6 +168,36 @@ const validarExistenciaEspecifica = (tipo) => {
     };
 };
 
+// Validação de Dados Obrigatórios para Produtos
+const validarDadosObrigatoriosProduto = (req, res, next) => {
+    const { nome, descricao, preco, vendedor } = req.body;
+
+    if (!nome || !descricao || preco == null || !vendedor) {
+        return res.status(400).json({ msg: 'Os campos nome, descrição, preço e vendedor são obrigatórios.' });
+    }
+
+    next();
+};
+
+// Validação de Tipos de Dados
+const validarTiposDeDadosProduto = (req, res, next) => {
+    const { nome, descricao, preco, vendedor } = req.body;
+
+    if (typeof nome !== 'string' || typeof descricao !== 'string') {
+        return res.status(400).json({ msg: 'Os campos nome e descrição devem ser strings.' });
+    }
+
+    if (typeof preco !== 'number' || preco <= 0) {
+        return res.status(400).json({ msg: 'O preço deve ser um número positivo.' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(vendedor)) {
+        return res.status(400).json({ msg: 'O ID do vendedor deve ser um ObjectId válido.' });
+    }
+
+    next();
+};
+
 // Validação: Verifica se existem produtos
 const validarExistenciaDeProdutos = async (req, res, next) => {
     try {
