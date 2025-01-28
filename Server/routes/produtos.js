@@ -5,6 +5,7 @@ const checkToken = require('../middlewares/authMiddleware');
 const ProdutoController = require('../controllers/ProdutoController');
 
 const {
+    validarExistenciaVendedorProduto,
     validarExistenciaDeProdutos,
     validarProdutoPorId,
     validarTiposDeDadosProduto,
@@ -14,6 +15,7 @@ const {
 
 router.post('/',
     checkToken,
+    validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
     validarFormatoPrecoProduto,
@@ -21,7 +23,6 @@ router.post('/',
 
 router.get('/',
     validarExistenciaDeProdutos,
-    validarProdutoPorId,
     ProdutoController.getAllProdutos);
 
 router.get('/:id',

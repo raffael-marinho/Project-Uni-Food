@@ -145,6 +145,7 @@ const validarExistenciaEspecifica = (tipo) => {
 
             if (tipo === 'vendedor') {
                 const vendedor = await Vendedor.findById(id).select('-senha');
+
                 if (!vendedor) {
                     return res.status(404).json({ msg: 'Vendedor não encontrado.' });
                 }
@@ -245,6 +246,22 @@ const validarProdutoPorId = async (req, res, next) => {
     }
 };
 
+// Validação da Existência do Vendedor
+const validarExistenciaVendedorProduto = async (req, res, next) => {
+    const { vendedor } = req.body;
+
+    try {
+        const vendedorExistente = await Vendedor.findById(vendedor);
+        if (!vendedorExistente) {
+            return res.status(404).json({ msg: 'O vendedor fornecido não existe.' });
+        }
+
+        next();
+    } catch (error) {
+        console.error('Erro ao validar o vendedor:', error.message);
+        return res.status(500).json({ msg: 'Erro ao validar o vendedor.', error: error.message });
+    }
+};
 
 module.exports = {
     validarDadosObrigatorios,
@@ -261,4 +278,5 @@ module.exports = {
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
     validarFormatoPrecoProduto,
+    validarExistenciaVendedorProduto,
 };
