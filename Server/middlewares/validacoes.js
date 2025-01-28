@@ -198,6 +198,19 @@ const validarTiposDeDadosProduto = (req, res, next) => {
     next();
 };
 
+// Validação de Formato do Preço
+const validarFormatoPrecoProduto = (req, res, next) => {
+    const { preco } = req.body;
+
+    const precoComDuasCasasDecimais = /^[0-9]+(\.[0-9]{1,2})?$/;
+
+    if (!precoComDuasCasasDecimais.test(preco.toString())) {
+        return res.status(400).json({ msg: 'O preço deve ter no máximo duas casas decimais.' });
+    }
+
+    next();
+};
+
 // Validação: Verifica se existem produtos
 const validarExistenciaDeProdutos = async (req, res, next) => {
     try {
@@ -245,4 +258,7 @@ module.exports = {
     validarExistenciaEspecifica,
     validarExistenciaDeProdutos,
     validarProdutoPorId,
+    validarTiposDeDadosProduto,
+    validarDadosObrigatoriosProduto,
+    validarFormatoPrecoProduto,
 };
