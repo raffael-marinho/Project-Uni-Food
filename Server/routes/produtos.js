@@ -30,7 +30,13 @@ router.get('/:id',
     validarProdutoPorId,
     ProdutoController.getOneProduto);
 
-router.put('/:id', ProdutoController.updateProduto);
+router.put('/:id',
+    checkToken,
+    validarExistenciaVendedorProduto,
+    validarDadosObrigatoriosProduto,
+    validarTiposDeDadosProduto,
+    validarFormatoPrecoProduto,
+    ProdutoController.updateProduto);
 
 router.delete('/:id',
     checkToken,
