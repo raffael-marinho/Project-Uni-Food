@@ -246,7 +246,7 @@ const validarProdutoPorId = async (req, res, next) => {
     }
 };
 
-// Validação da Existência do Vendedor
+// Validação da Existência do Vendedor - (pode ser melhorada com a validação espeficica)
 const validarExistenciaVendedorProduto = async (req, res, next) => {
     const { vendedor } = req.body;
 
