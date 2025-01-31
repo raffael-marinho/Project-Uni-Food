@@ -1,5 +1,6 @@
 const Vendedor = require('../models/Vendedor');
 const Cliente = require('../models/Cliente');
+const Produto = require("../models/Produto");
 
 const mongoose = require('mongoose');
 
@@ -144,6 +145,7 @@ const validarExistenciaEspecifica = (tipo) => {
 
             if (tipo === 'vendedor') {
                 const vendedor = await Vendedor.findById(id).select('-senha');
+
                 if (!vendedor) {
                     return res.status(404).json({ msg: 'Vendedor não encontrado.' });
                 }
@@ -167,7 +169,120 @@ const validarExistenciaEspecifica = (tipo) => {
     };
 };
 
-// Exportar as funções
+// Validação de Dados Obrigatórios para Produtos
+const validarDadosObrigatoriosProduto = (req, res, next) => {
+    const { nome, descricao, preco, vendedor } = req.body;
+
+    if (!nome || !descricao || preco == null || !vendedor) {
+        return res.status(400).json({ msg: 'Os campos nome, descrição, preço e vendedor são obrigatórios.' });
+    }
+
+    next();
+};
+
+// Validação de Tipos de Dados
+const validarTiposDeDadosProduto = (req, res, next) => {
+    const { nome, descricao, preco, vendedor } = req.body;
+
+    if (typeof nome !== 'string' || typeof descricao !== 'string') {
+        return res.status(400).json({ msg: 'Os campos nome e descrição devem ser strings.' });
+    }
+
+    if (typeof preco !== 'number' || preco <= 0) {
+        return res.status(400).json({ msg: 'O preço deve ser um número positivo.' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(vendedor)) {
+        return res.status(400).json({ msg: 'O ID do vendedor deve ser um ObjectId válido.' });
+    }
+
+    next();
+};
+
+// Validação de Formato do Preço
+const validarFormatoPrecoProduto = (req, res, next) => {
+    const { preco } = req.body;
+
+    const precoComDuasCasasDecimais = /^[0-9]+(\.[0-9]{1,2})?$/;
+
+    if (!precoComDuasCasasDecimais.test(preco.toString())) {
+        return res.status(400).json({ msg: 'O preço deve ter no máximo duas casas decimais.' });
+    }
+
+    next();
+};
+
+// Validação: Verifica se existem produtos
+const validarExistenciaDeProdutos = async (req, res, next) => {
+    try {
+        const produtos = await Produto.find();
+        if (produtos.length === 0) {
+            return res.status(404).json({ msg: 'Nenhum produto encontrado.' });
+        }
+        req.produtos = produtos;
+        next();
+    } catch (error) {
+        return res.status(500).json({ error: 'Erro ao validar a existência de produtos.', details: error.message });
+    }
+};
+
+// Validação: Verifica se o ID do produto é válido e se o produto existe
+const validarProdutoPorId = async (req, res, next) => {
+    const { id } = req.params;
+
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({ error: 'ID do produto inválido.' });
+    }
+
+    try {
+        const produto = await Produto.findById(id).populate('vendedor', '-senha');
+        if (!produto) {
+            return res.status(404).json({ msg: 'Produto não encontrado.' });
+        }
+        req.produto = produto;
+        next();
+    } catch (error) {
+        return res.status(500).json({ error: 'Erro ao validar o produto por ID.', details: error.message });
+    }
+};
+
+// Validação da Existência do Vendedor - (pode ser melhorada com a validação espeficica)
+const validarExistenciaVendedorProduto = async (req, res, next) => {
+    const { vendedor } = req.body;
+
+    try {
+        const vendedorExistente = await Vendedor.findById(vendedor);
+        if (!vendedorExistente) {
+            return res.status(404).json({ msg: 'O vendedor fornecido não existe.' });
+        }
+
+        next();
+    } catch (error) {
+        console.error('Erro ao validar o vendedor:', error.message);
+        return res.status(500).json({ msg: 'Erro ao validar o vendedor.', error: error.message });
+    }
+};
+
+//Verificar se o vendedor autenticado é o dono do produto
+const validarPermissaoProduto = async (req, res, next) => {
+    const { id } = req.params;
+    const vendedorAutenticado = req.user;
+
+    try {
+        const produto = await Produto.findById(id);
+
+        if (produto.vendedor.toString() !== vendedorAutenticado.id.toString()) {
+            return res.status(403).json({ msg: 'Você não tem permissão para excluir este produto.' });
+        }
+
+        req.produto = produto;
+        next();
+    } catch (error) {
+
+        return res.status(500).json({ msg: 'Erro interno ao validar permissão.', error: error.message });
+    }
+};
+
 module.exports = {
     validarDadosObrigatorios,
     validarComprimento,
@@ -178,4 +293,11 @@ module.exports = {
     validarPermissao,
     validarExistencia,
     validarExistenciaEspecifica,
+    validarExistenciaDeProdutos,
+    validarProdutoPorId,
+    validarTiposDeDadosProduto,
+    validarDadosObrigatoriosProduto,
+    validarFormatoPrecoProduto,
+    validarExistenciaVendedorProduto,
+    validarPermissaoProduto
 };
