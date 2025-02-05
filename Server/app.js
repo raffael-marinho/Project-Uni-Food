@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-
+const pedidoRoutes = require('./routes/pedidoRoutes');
 
 
 
@@ -19,8 +19,8 @@ const path = require('path');
 // Middleware para servir arquivos estáticos da pasta 'uploads'
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
-
+// rotas para pedidos
+app.use('/api', pedidoRoutes);
 
 // Configuração do CORS
 app.use(cors({

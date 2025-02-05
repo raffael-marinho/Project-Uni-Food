@@ -15,20 +15,6 @@ const validarDadosObrigatorios = (req, res, next) => {
     next();
 };
 
-// Validação de Comprimento de Nome e Telefone
-const validarComprimento = (req, res, next) => {
-    const { nome, telefone } = req.body;
-
-    if (nome.length < 5 || nome.length > 50) {
-        return res.status(400).json({ msg: 'O nome deve ter entre 5 e 50 caracteres.' });
-    }
-
-    if (telefone.length < 10 || telefone.length > 15) {
-        return res.status(400).json({ msg: 'O telefone deve ter entre 10 e 15 caracteres.' });
-    }
-
-    next();
-};
 
 // Validação de Domínio do Email
 const validarDominioEmail = (req, res, next) => {
@@ -88,27 +74,7 @@ const validarFormatoSenha = (req, res, next) => {
     next();
 };
 
-// Validação de ID
-const validarId = (req, res, next) => {
-    const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ msg: 'ID inválido.' });
-    }
-
-    next();
-};
-
-// Validação de Permissão
-const validarPermissao = (req, res, next) => {
-    const { id } = req.params;
-
-    if (req.user.id !== id) {
-        return res.status(403).json({ msg: 'Permissão negada.' });
-    }
-
-    next();
-};
 
 // Validação de Existência do Vendedor e cliente
 const validarExistencia = (tipo) => {
@@ -137,37 +103,7 @@ const validarExistencia = (tipo) => {
 };
 
 
-// Validação de Existência do Vendedor pelo Id
-const validarExistenciaEspecifica = (tipo) => {
-    return async (req, res, next) => {
-        try {
-            const { id } = req.params;
 
-            if (tipo === 'vendedor') {
-                const vendedor = await Vendedor.findById(id).select('-senha');
-
-                if (!vendedor) {
-                    return res.status(404).json({ msg: 'Vendedor não encontrado.' });
-                }
-                req.vendedor = vendedor;
-            }
-            else if (tipo === 'cliente') {
-                const cliente = await Cliente.findById(id).select('-senha');
-                if (!cliente) {
-                    return res.status(404).json({ msg: 'Cliente não encontrado.' });
-                }
-                req.cliente = cliente;
-            } else {
-                return res.status(400).json({ msg: 'Tipo inválido especificado na validação.' });
-            }
-
-            next();
-        } catch (error) {
-            console.error(`Erro ao verificar existência de ${tipo} no banco:`, error.message);
-            return res.status(500).json({ msg: `Erro ao verificar existência de ${tipo}.`, error: error.message });
-        }
-    };
-};
 
 // Validação de Dados Obrigatórios para Produtos
 const validarDadosObrigatoriosProduto = (req, res, next) => {
@@ -199,18 +135,7 @@ const validarTiposDeDadosProduto = (req, res, next) => {
     next();
 };
 
-// Validação de Formato do Preço
-const validarFormatoPrecoProduto = (req, res, next) => {
-    const { preco } = req.body;
 
-    const precoComDuasCasasDecimais = /^[0-9]+(\.[0-9]{1,2})?$/;
-
-    if (!precoComDuasCasasDecimais.test(preco.toString())) {
-        return res.status(400).json({ msg: 'O preço deve ter no máximo duas casas decimais.' });
-    }
-
-    next();
-};
 
 // Validação: Verifica se existem produtos
 const validarExistenciaDeProdutos = async (req, res, next) => {
@@ -226,25 +151,7 @@ const validarExistenciaDeProdutos = async (req, res, next) => {
     }
 };
 
-// Validação: Verifica se o ID do produto é válido e se o produto existe
-const validarProdutoPorId = async (req, res, next) => {
-    const { id } = req.params;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-        return res.status(400).json({ error: 'ID do produto inválido.' });
-    }
-
-    try {
-        const produto = await Produto.findById(id).populate('vendedor', '-senha');
-        if (!produto) {
-            return res.status(404).json({ msg: 'Produto não encontrado.' });
-        }
-        req.produto = produto;
-        next();
-    } catch (error) {
-        return res.status(500).json({ error: 'Erro ao validar o produto por ID.', details: error.message });
-    }
-};
 
 // Validação da Existência do Vendedor - (pode ser melhorada com a validação espeficica)
 const validarExistenciaVendedorProduto = async (req, res, next) => {
@@ -285,19 +192,13 @@ const validarPermissaoProduto = async (req, res, next) => {
 
 module.exports = {
     validarDadosObrigatorios,
-    validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
-    validarId,
-    validarPermissao,
     validarExistencia,
-    validarExistenciaEspecifica,
     validarExistenciaDeProdutos,
-    validarProdutoPorId,
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
-    validarFormatoPrecoProduto,
     validarExistenciaVendedorProduto,
     validarPermissaoProduto
 };

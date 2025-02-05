@@ -7,10 +7,8 @@ const ProdutoController = require('../controllers/ProdutoController');
 const {
     validarExistenciaVendedorProduto,
     validarExistenciaDeProdutos,
-    validarProdutoPorId,
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
-    validarFormatoPrecoProduto,
     validarPermissaoProduto,
 } = require('../middlewares/validacoes');
 
@@ -19,7 +17,6 @@ router.post('/',
     validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
-    validarFormatoPrecoProduto,
     ProdutoController.postProduto);
 
 router.get('/',
@@ -28,7 +25,6 @@ router.get('/',
 
 router.get('/:id',
     validarExistenciaDeProdutos,
-    validarProdutoPorId,
     ProdutoController.getOneProduto);
 
 router.put('/:id',
@@ -36,13 +32,11 @@ router.put('/:id',
     validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
-    validarFormatoPrecoProduto,
     validarPermissaoProduto,
     ProdutoController.updateProduto);
 
 router.delete('/:id',
     checkToken,
-    validarProdutoPorId,
     validarExistenciaDeProdutos,
     validarPermissaoProduto,
     ProdutoController.deleteProduto);
