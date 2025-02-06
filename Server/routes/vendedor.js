@@ -37,7 +37,6 @@ router.get('/:id',
 // Rota para atualizar um vendedor
 router.put('/:id',
     checkToken,
-    validarExistenciaEspecifica('vendedor'),
     validarDadosObrigatorios,
     validarDominioEmail,
     validarEmailUnico('vendedor'),
@@ -48,7 +47,6 @@ router.put('/:id',
 // Rota para deletar um vendedor
 router.delete('/:id',
     checkToken,
-    validarExistenciaEspecifica('vendedor'),
     VendedorController.deleteVendedor);
 
 

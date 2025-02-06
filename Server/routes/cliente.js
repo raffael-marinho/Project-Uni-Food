@@ -37,7 +37,6 @@ router.get('/:id',
 // Rota para atualizar um cliente
 router.put('/:id',
     checkToken,
-    validarExistenciaEspecifica('cliente'),
     validarDadosObrigatorios,
     validarDominioEmail,
     validarEmailUnico('cliente'),
@@ -48,7 +47,6 @@ router.put('/:id',
 // Rota para deletar um cliente
 router.delete('/:id',
     checkToken,
-    validarExistenciaEspecifica('cliente'),
     ClienteController.deleteCliente);
 
 module.exports = router;

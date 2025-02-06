@@ -5,7 +5,6 @@ const checkToken = require('../middlewares/authMiddleware');
 const ProdutoController = require('../controllers/ProdutoController');
 
 const {
-    validarExistenciaVendedorProduto,
     validarExistenciaDeProdutos,
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
@@ -15,7 +14,6 @@ const {
 // Rota para criar um produto
 router.post('/',
     checkToken,
-    validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
     ProdutoController.postProduto);
@@ -36,7 +34,6 @@ router.get('/:id',
 // Rota para atualizar um produto
 router.put('/:id',
     checkToken,
-    validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
     validarPermissaoProduto,

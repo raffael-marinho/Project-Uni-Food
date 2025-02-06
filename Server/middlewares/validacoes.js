@@ -153,23 +153,6 @@ const validarExistenciaDeProdutos = async (req, res, next) => {
 
 
 
-// Validação da Existência do Vendedor - (pode ser melhorada com a validação espeficica)
-const validarExistenciaVendedorProduto = async (req, res, next) => {
-    const { vendedor } = req.body;
-
-    try {
-        const vendedorExistente = await Vendedor.findById(vendedor);
-        if (!vendedorExistente) {
-            return res.status(404).json({ msg: 'O vendedor fornecido não existe.' });
-        }
-
-        next();
-    } catch (error) {
-        console.error('Erro ao validar o vendedor:', error.message);
-        return res.status(500).json({ msg: 'Erro ao validar o vendedor.', error: error.message });
-    }
-};
-
 //Verificar se o vendedor autenticado é o dono do produto
 const validarPermissaoProduto = async (req, res, next) => {
     const { id } = req.params;
@@ -199,6 +182,5 @@ module.exports = {
     validarExistenciaDeProdutos,
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
-    validarExistenciaVendedorProduto,
     validarPermissaoProduto
 };
