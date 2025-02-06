@@ -3,12 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperType } from "swiper";
 import slides from "@/assets/slides";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import "swiper/swiper-bundle.css";
 
 
 function IntroScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null); 
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = () => {
+    if (activeIndex === slides.length - 1) {
+      setLoading(true);
+      setTimeout(() => {
+        navigate("/selector");
+      }, 1500);
+    } else {
+      swiperRef.current?.slideNext();
+    }; 
+  }
 
 
   return (
@@ -39,19 +54,12 @@ function IntroScreen() {
           />
         ))}
       </div>
-      <Button
-        className="w-3/4"
-        onClick={() => {
-          if (activeIndex === slides.length - 1) {
-            console.log("Finalizado!"); 
-          } else {
-            swiperRef.current?.slideNext(); // Avança para o próximo slide
-          }
-        }}
-      >
-        {activeIndex === slides.length - 1 ? "Começar" : "Próximo"}
-      </Button>
-      <Button className="mt-4" variant={"link"}>Pular Introdução</Button>
+      <Button className="w-3/4 flex items-center gap-2" onClick={handleClick} disabled={loading}>
+      {loading && <Loader2 className="animate-spin" />}
+      {loading ? "Carregando..." : "Proximo"}
+    </Button>
+       
+      <Button className="mt-4" variant={"link"} onClick={() => navigate("/selector")}>Pular Introdução</Button>
     </div>
   );
 }
