@@ -12,6 +12,7 @@ const {
     validarPermissaoProduto,
 } = require('../middlewares/validacoes');
 
+// Rota para criar um produto
 router.post('/',
     checkToken,
     validarExistenciaVendedorProduto,
@@ -19,14 +20,20 @@ router.post('/',
     validarTiposDeDadosProduto,
     ProdutoController.postProduto);
 
+
+// Rota para obter todos os produtos
 router.get('/',
     validarExistenciaDeProdutos,
     ProdutoController.getAllProdutos);
 
+
+// Rota para obter um produto por ID
 router.get('/:id',
     validarExistenciaDeProdutos,
     ProdutoController.getOneProduto);
 
+
+// Rota para atualizar um produto
 router.put('/:id',
     checkToken,
     validarExistenciaVendedorProduto,
@@ -35,6 +42,8 @@ router.put('/:id',
     validarPermissaoProduto,
     ProdutoController.updateProduto);
 
+
+// Rota para excluir um produto
 router.delete('/:id',
     checkToken,
     validarExistenciaDeProdutos,

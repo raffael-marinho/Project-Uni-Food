@@ -12,6 +12,8 @@ const {
     validarExistencia,
 } = require('../middlewares/validacoes');
 
+
+// Rota para criar um cliente
 router.post("/",
     validarDadosObrigatorios,
     validarDominioEmail,
@@ -19,14 +21,20 @@ router.post("/",
     validarFormatoSenha,
     ClienteController.postCliente);
 
+
+// Rota para obter todos os clientes
 router.get("/",
     validarExistencia('cliente'),
     ClienteController.getAllClientes);
 
+
+// Rota para obter um cliente por ID
 router.get('/:id',
     checkToken,
     ClienteController.getOneCliente);
 
+
+// Rota para atualizar um cliente
 router.put('/:id',
     checkToken,
     validarExistenciaEspecifica('cliente'),
@@ -36,6 +44,8 @@ router.put('/:id',
     validarFormatoSenha,
     ClienteController.updateCliente);
 
+
+// Rota para deletar um cliente
 router.delete('/:id',
     checkToken,
     validarExistenciaEspecifica('cliente'),

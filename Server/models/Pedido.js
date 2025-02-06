@@ -34,7 +34,7 @@ const pedidoSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pendente', 'Em processamento', 'Enviado', 'Entregue', 'Cancelado'],
+    enum: ['Pendente','Recusado','Aceito'],
     default: 'Pendente',
   },
   dataPedido: {

@@ -12,6 +12,8 @@ const {
     validarExistencia,
 } = require('../middlewares/validacoes');
 
+
+// Rota para criar um vendedor
 router.post("/",
     validarDadosObrigatorios,
     validarDominioEmail,
@@ -19,14 +21,20 @@ router.post("/",
     validarFormatoSenha,
     VendedorController.postVendedor);
 
+
+// Rota para obter todos os vendedores
 router.get("/",
     validarExistencia('vendedor'),
     VendedorController.getAllVendedor);
 
+
+// Rota para obter um vendedor por ID
 router.get('/:id',
     checkToken,
     VendedorController.getOneVendedor);
 
+
+// Rota para atualizar um vendedor
 router.put('/:id',
     checkToken,
     validarExistenciaEspecifica('vendedor'),
@@ -36,6 +44,8 @@ router.put('/:id',
     validarFormatoSenha,
     VendedorController.updateVendedor);
 
+
+// Rota para deletar um vendedor
 router.delete('/:id',
     checkToken,
     validarExistenciaEspecifica('vendedor'),
