@@ -1,20 +1,6 @@
-import { Loader2 } from 'lucide-react';
 import {uni} from '../../assets/imagens.ts'
-import { Button } from '../../components/ui/button.tsx'
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import LoadingButton from '@/components/loadingbutton.tsx';
 function Intro() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  
-  const handleClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/intro');
-    }, 1500);
-  }
   return (
     <>
       <div className='flex flex-col items-center justify-center h-screen'>
