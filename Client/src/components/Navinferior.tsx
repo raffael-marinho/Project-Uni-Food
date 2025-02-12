@@ -1,49 +1,51 @@
-import React, { useState } from "react";
-import  home from "@/assets/imagens/home.svg";
-import  calendar from "@/assets/imagens/calendar.svg";
-import  lupa from "@/assets/imagens/lupa.svg";
-import  usuario from "@/assets/imagens/usuario.svg";
-
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { Home, Calendar, Search, User } from "lucide-react";
+import { useNav } from "@/context/nav-context";
 
 type Tab = {
   id: string;
   label: string;
-  icon: string;
+  icon: React.ElementType;
+  route: string;
 };
 
-const NavInferior: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("inicio");
+const tabs: Tab[] = [
+  { id: "inicio", label: "Início", icon: Home, route: "/home" },
+  { id: "reservas", label: "Reservas", icon: Calendar, route: "/reservas" },
+  { id: "pesquisar", label: "Pesquisar", icon: Search, route: "/pesquisar" },
+  { id: "perfil", label: "Perfil", icon: User, route: "/perfil" },
+];
 
-  const tabs: Tab[] = [
-    { id: "inicio", label: "Início", icon: home },
-    { id: "reservas", label: "Reservas", icon: calendar },
-    { id: "pesquisar", label: "Pesquisar", icon: lupa },
-    { id: "perfil", label: "Perfil", icon: usuario },
-  ];
+const NavInferior: React.FC = () => {
+  const { activeTab } = useNav(); // 🔹 Obtém a aba ativa do contexto
 
   return (
-    <nav className="bg-[#FFF5E5] fixed bottom-0 left-0 z-50 w-full h-16 border-t border-gray-200">
+    <nav className="bg-[#FFF6E0] fixed bottom-0 left-0 z-50 w-full h-16">
       <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className="flex flex-col items-center justify-center px-5 group"
-          >
-            <img
-              src={tab.icon}
-              alt={tab.label}
-              className={activeTab === tab.id ? "filter brightness-0 invert" : "bg-transparent"}
-            />
-            <span
-              className={`text-sm font-bold ${
-                activeTab === tab.id ? "text-[#FAAB35]" : "text-[#D3A88C]"
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id; // 🔹 Verifica se a aba está ativa pelo estado global
+
+          return (
+            <NavLink
+              key={tab.id}
+              to={tab.route}
+              className={`flex flex-col items-center justify-center px-5 ${
+                isActive ? "text-primary" : "text-[#DBBDAA] opacity-60"
               }`}
             >
-              {tab.label}
-            </span>
-          </button>
-        ))}
+              <Icon
+                size={28}
+                strokeWidth={2}
+                className={isActive ? "text-primary" : "text-[#DBBDAA] opacity-50"}
+              />
+              <span className={`text-sm font-semibold ${isActive ? "text-primary" : "text-[#DBBDAA] opacity-60"}`}>
+                {tab.label}
+              </span>
+            </NavLink>
+          );
+        })}
       </div>
     </nav>
   );
