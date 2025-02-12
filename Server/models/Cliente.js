@@ -39,17 +39,5 @@ const clienteSchema = new mongoose.Schema({
   }],
 }, { timestamps: true });
 
-// Hash da senha antes de salvar
-clienteSchema.pre('save', async function (next) {
-  if (this.isModified('senha')) {
-    this.senha = await bcrypt.hash(this.senha, 10);
-  }
-  next();
-});
-
-// Comparar senha
-clienteSchema.methods.comparePassword = function (senha) {
-  return bcrypt.compare(senha, this.senha);
-};
 
 module.exports = mongoose.model('Cliente', clienteSchema);

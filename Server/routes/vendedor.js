@@ -6,50 +6,47 @@ const checkToken = require('../middlewares/authMiddleware');
 const VendedorController = require('../controllers/VendedorController');
 const {
     validarDadosObrigatorios,
-    validarComprimento,
     validarDominioEmail,
     validarEmailUnico,
     validarFormatoSenha,
-    validarId,
-    validarPermissao,
     validarExistencia,
-    validarExistenciaEspecifica,
 } = require('../middlewares/validacoes');
 
+
+// Rota para criar um vendedor
 router.post("/",
     validarDadosObrigatorios,
-    validarComprimento,
     validarDominioEmail,
     validarEmailUnico('vendedor'),
     validarFormatoSenha,
     VendedorController.postVendedor);
 
+
+// Rota para obter todos os vendedores
 router.get("/",
     validarExistencia('vendedor'),
     VendedorController.getAllVendedor);
 
+
+// Rota para obter um vendedor por ID
 router.get('/:id',
-    validarId,
     checkToken,
-    validarId,
-    validarPermissao,
     VendedorController.getOneVendedor);
 
+
+// Rota para atualizar um vendedor
 router.put('/:id',
     checkToken,
-    validarExistenciaEspecifica('vendedor'),
-    validarPermissao,
     validarDadosObrigatorios,
-    validarComprimento,
     validarDominioEmail,
     validarEmailUnico('vendedor'),
     validarFormatoSenha,
     VendedorController.updateVendedor);
 
+
+// Rota para deletar um vendedor
 router.delete('/:id',
     checkToken,
-    validarExistenciaEspecifica('vendedor'),
-    validarPermissao,
     VendedorController.deleteVendedor);
 
 

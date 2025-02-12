@@ -5,44 +5,44 @@ const checkToken = require('../middlewares/authMiddleware');
 const ProdutoController = require('../controllers/ProdutoController');
 
 const {
-    validarExistenciaVendedorProduto,
     validarExistenciaDeProdutos,
-    validarProdutoPorId,
     validarTiposDeDadosProduto,
     validarDadosObrigatoriosProduto,
-    validarFormatoPrecoProduto,
     validarPermissaoProduto,
 } = require('../middlewares/validacoes');
 
+// Rota para criar um produto
 router.post('/',
     checkToken,
-    validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
-    validarFormatoPrecoProduto,
     ProdutoController.postProduto);
 
+
+// Rota para obter todos os produtos
 router.get('/',
     validarExistenciaDeProdutos,
     ProdutoController.getAllProdutos);
 
+
+// Rota para obter um produto por ID
 router.get('/:id',
     validarExistenciaDeProdutos,
-    validarProdutoPorId,
     ProdutoController.getOneProduto);
 
+
+// Rota para atualizar um produto
 router.put('/:id',
     checkToken,
-    validarExistenciaVendedorProduto,
     validarDadosObrigatoriosProduto,
     validarTiposDeDadosProduto,
-    validarFormatoPrecoProduto,
     validarPermissaoProduto,
     ProdutoController.updateProduto);
 
+
+// Rota para excluir um produto
 router.delete('/:id',
     checkToken,
-    validarProdutoPorId,
     validarExistenciaDeProdutos,
     validarPermissaoProduto,
     ProdutoController.deleteProduto);

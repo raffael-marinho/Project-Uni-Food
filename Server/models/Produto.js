@@ -9,10 +9,12 @@ const produtoSchema = new mongoose.Schema({
   descricao: {
     type: String,
     required: true,
+    maxlength: 500,
   },
   preco: {
     type: Number,
     required: true,
+    min: 0,
   },
   imagens: [{
     type: String, // Caminhos ou URLs das imagens
