@@ -5,7 +5,7 @@ import menu from "@/assets/menu.svg";
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="bg-transparent sticky top-0 w-full shadow-md z-50"> {/* Cor de fundo bege claro */}
+    <nav className="bg-background sticky top-0 w-full shadow-md z-50"> {/* Cor de fundo bege claro */}
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         {/* Ícone do menu */}
         {/* <div>
