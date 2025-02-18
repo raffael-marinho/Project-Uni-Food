@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNav } from '@/context/nav-context';
 
 const Home = () => {
-  const [user, setUser] = useState<{ nome: string; telefone: string } | null>(null);
+  const [user, setUser] = useState<Record<string, any> | null>(null);
 
   const { setActiveTab } = useNav();
 
