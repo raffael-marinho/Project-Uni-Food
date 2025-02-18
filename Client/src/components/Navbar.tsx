@@ -1,7 +1,7 @@
 import React from "react";
 import  LogoMobile from "@/assets/imagens/LogoMobile.svg";
 import Shoppingcart from "@/assets/imagens/shoppingcart.svg";
-import menu from "@/assets/menu.svg";
+
 
 const Navbar: React.FC = () => {
   return (
