@@ -5,6 +5,10 @@ import IntroScreen from '../sections/intro/intro'
 import Selector from '../sections/selector/index'
 import LoginClient from '../sections/login/loginclient'
 import LoginVendedor from '../sections/login/loginvendedor'
+import Perfil from '../sections/perfil/perfil'
+import Reservas from '../sections/reservas/reservas'
+import Pesquisar from '@/sections/pesquisar/pesquisar'
+
 
 export const AppRoutes = () => {
     return (
@@ -15,6 +19,9 @@ export const AppRoutes = () => {
             <Route path="/selector" element={<Selector />} />
             <Route path="/logincliente" element={<LoginClient />} />
             <Route path="/loginvenda" element={<LoginVendedor />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/reservas" element={<Reservas />} />
+            <Route path="/pesquisar" element={<Pesquisar />} />
         </Routes>
     )
 }
