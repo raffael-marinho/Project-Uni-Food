@@ -1,48 +1,81 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
-interface AuthContextProps {
-  user: any;
-  token: string | null;
-  login: (user: any, token: string) => void;
-  logout: () => void;
+
+interface User {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string;
+  imagemPerfil?: string;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+interface AuthContextProps {
+  user: User | null;  
+  token: string | null;
+  login: (user: User, token: string) => void;
+  logout: () => void;
+  updateUser: (updatedUser: Partial<User>) => void;  
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
+
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
   return context;
 };
 
+
+
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Inicializando com valores do localStorage, se existirem
-  const storedUser = localStorage.getItem('user');
-  const storedToken = localStorage.getItem('token');
+  const [user, setUser] = useState<User | null>(null);  
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); 
 
-  const [user, setUser] = useState<any>(storedUser ? JSON.parse(storedUser) : null);
-  const [token, setToken] = useState<string | null>(storedToken);
+  useEffect(() => {
+  
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-  const login = (user: any, token: string) => {
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setToken(storedToken);
+    }
+    setLoading(false); 
+  }, []);
+
+  const login = (user: User, token: string) => {
     setUser(user);
     setToken(token);
-    // Armazenar no localStorage para persistência
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    // Remover do localStorage ao deslogar
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
+
+  const updateUser = (updatedUser: Partial<User>) => {
+    setUser((prevUser) => {
+      // Garantindo que prevUser tem o tipo correto
+      if (prevUser) {
+        return { ...prevUser, ...updatedUser };
+      }
+      return prevUser;
+    });
+    localStorage.setItem("user", JSON.stringify({ ...user, ...updatedUser }));
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );
