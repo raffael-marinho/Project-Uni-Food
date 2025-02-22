@@ -47,3 +47,6 @@
     @apply px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-[17px] shadow-md transition hover:bg-primary/90;
   }
 }
+.custom-swiper .swiper-pagination-bullet {
+  background-color: #F2E8CF;
+}
