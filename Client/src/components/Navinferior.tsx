@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { Home, Calendar, Search, User } from "lucide-react";
 import { useNav } from "@/context/nav-context";
+import { useAuth } from "@/context/auth-context";
 
 type Tab = {
   id: string;
@@ -10,15 +11,22 @@ type Tab = {
   route: string;
 };
 
-const tabs: Tab[] = [
-  { id: "inicio", label: "Início", icon: Home, route: "/home" },
-  { id: "reservas", label: "Reservas", icon: Calendar, route: "/reservas" },
-  { id: "pesquisar", label: "Pesquisar", icon: Search, route: "/pesquisar" },
-  { id: "perfil", label: "Perfil", icon: User, route: "/perfil" },
-];
 
 const NavInferior: React.FC = () => {
   const { activeTab } = useNav(); // 🔹 Obtém a aba ativa do contexto
+  const { user } = useAuth();
+
+  const tabs: Tab[] = [
+    { id: "inicio", label: "Início", icon: Home, route: "/home" },
+    { id: "reservas", label: "Reservas", icon: Calendar, route: "/reservas" },
+    { id: "pesquisar", label: "Pesquisar", icon: Search, route: "/pesquisar" },
+        { 
+      id: "perfil", 
+      label: "Perfil", 
+      icon: User, 
+      route: user ? `/perfil/${user.id}` : "/perfil/:id"  
+    },
+  ];
 
   return (
     <nav className="bg-[#FFF6E0] fixed bottom-0 left-0 z-50 w-full h-16">
