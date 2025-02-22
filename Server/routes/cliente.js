@@ -37,10 +37,6 @@ router.get('/:id',
 // Rota para atualizar um cliente
 router.put('/:id',
     checkToken,
-    validarDadosObrigatorios,
-    validarDominioEmail,
-    validarEmailUnico('cliente'),
-    validarFormatoSenha,
     ClienteController.updateCliente);
 
 
