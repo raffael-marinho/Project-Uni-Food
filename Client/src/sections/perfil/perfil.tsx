@@ -1,36 +1,55 @@
-import NavBar from "../../components/Navbar"
-import NavInferior from "../../components/Navinferior"
-import { useNav } from "../../context/nav-context"
-import { useEffect, useState } from "react";
-
+import { Button } from "@/components/ui/button";
+import NavBar from "../../components/Navbar";
+import NavInferior from "../../components/Navinferior";
+import { useNav } from "../../context/nav-context";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/auth-context";
 
 const Perfil = () => {
     const { setActiveTab } = useNav();
-    const [user, setUser] = useState<Record<string, any> | null>(null);
+    const { user } = useAuth(); 
+    const navigate = useNavigate(); // Hook para navegação
 
     useEffect(() => {
-        // Obtendo o usuário do localStorage
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-    
+
         setActiveTab("perfil");
-      }, []);
+    }, []);
+
+    // Função para sair e redirecionar para login
+    const handleLogout = () => {
+        localStorage.removeItem("user"); // Remove o usuário do localStorage
+        navigate("/logincliente"); // Redireciona para a tela de login
+    };
 
     return (
         <div>
-            <NavBar/>
+            <NavBar />
 
-            <div className="flex flex-col items-center h-screen p-5">
-                <h1 className="text-3xl font-bold mb-4">Perfil do Usuário</h1>
-                <p className="text-lg">Nome: {user?.nome}</p>
-                <p className="text-lg">Telefone: {user?.telefone}</p>
+            <div className="flex flex-col items-center justify-center h-svh">
+                <h1 className="text-3xl font-bold mb-4">{user?.nome || "Usuário"}</h1>
+                <div>
+                    <Button
+                        variant={"link"}
+                        className="text-lg w-60 flex items-center gap-2 font-semibold"
+                        onClick={() => navigate(`/editarperfil/${user?.id}`)} 
+                    >
+                        Editar Perfil
+                    </Button>
+
+                    <Button
+                        variant={"link"}
+                        className="text-lg w-60 flex items-center gap-2 font-semibold"
+                        onClick={handleLogout}
+                    >
+                        Sair
+                    </Button>
+                </div>
             </div>
 
-            <NavInferior/>
+            <NavInferior />
         </div>
     );
-}
+};
 
 export default Perfil;
