@@ -8,6 +8,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 import { useAuth } from '@/context/auth-context';
+import CardLanche from '@/components/cardlanche';
+import CardVendedor from '@/components/CardVendedor';
+import { dadosLanches } from '@/assets/dadoscards';
+import { dadosVendedor } from '@/assets/dadosvendedor';
+
 const Home = () => {
   const { user } = useAuth();
   const { setActiveTab } = useNav();
@@ -17,9 +22,9 @@ const Home = () => {
   }, []);
 
   return (
-    <div >
+    <div className='flex flex-col h-screen' >
       <Navbar />
-      <div className='flex flex-col justify-center p-3 h-svh mt-8'>
+      <div className='flex-1 p-4 overflow-y-auto ' style={{ marginBottom: '4rem' }}>
         <h1 className='text-xl font-semibold'>{getSaudacao()}, {user?.nome || "usuário"}!</h1>
         
         <div className="mt-2">
@@ -28,7 +33,7 @@ const Home = () => {
             pagination={{ clickable: true }}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             loop={true}
-            className="w-full rounded-lg shadow-lg custom-swiper"
+            className="w-full rounded-lg  custom-swiper"
           >
             <SwiperSlide>
               <img src={banner01} alt="Banner 1" className='w-full h-full' />
@@ -44,10 +49,32 @@ const Home = () => {
 
        
         <div>
-          <h1 className='text-lg font-semibold pt-4'>Lanches Mais Pedidos</h1>
-          <img src={banner02} alt="Banner 2" className="w-full h-full " />
-          <img src={banner02} alt="Banner 2" className="w-full h-full " />
-          <img src={banner02} alt="Banner 2" className="w-full h-full " />
+          <h1 className='text-base font-semibold pt-4 pb-2'>Lanches Recomendados</h1>
+          <div className='flex px-1 gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden'>
+           {dadosLanches.map((lanche) => (
+             <CardLanche key={lanche.id} 
+             titulo={lanche.titulo} 
+             vendedor={lanche.vendedor} 
+             preco={lanche.preco} 
+             imagem={lanche.imagem}/>
+           ))}
+            
+          </div>
+          <div>
+            <h1 className='text-base font-semibold pt-4 pb-2'>Vendedores</h1>
+            <div className='flex flex-col gap-4'>
+            {dadosVendedor.map((vendedor) => (
+             <CardVendedor
+              key={vendedor.id}
+              nome={vendedor.nome}
+              telefone={vendedor.telefone}
+              status={vendedor.status}
+              imagem={vendedor.imagem}
+                />
+              ))}
+            </div>
+           
+          </div>
         </div>
       </div>
       <NavInferior />
