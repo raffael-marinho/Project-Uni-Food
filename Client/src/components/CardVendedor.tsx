@@ -10,7 +10,7 @@ interface CardVendedorProps {
 
 const CardVendedor: React.FC<CardVendedorProps> = ({ nome, status, telefone, imagem }) => {
 
-    const whatsappLink = `https://wa.me/${telefone}`;
+    const whatsappLink = `https://wa.me/${telefone}/?text=Ol%C3%A1,%20gostaria%20de%20fazer%20um%20pedido!%20${nome}`;
 
     return (
         <div className="h-28 w-full bg-[#FFF6E0] rounded-lg flex flex-row items-center">
