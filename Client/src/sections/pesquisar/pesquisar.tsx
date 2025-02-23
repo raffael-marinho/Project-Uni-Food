@@ -13,7 +13,7 @@ const Pesquisar = () => {
       }, []);
       
     return (
-        <div>
+        <div className="flex flex-col h-screen">
             <NavBar/>
             <div className="flex flex-col items-center mt-28">
                 <h1 className="text-3xl font-bold mb-4">Pesquisar</h1>

@@ -11,7 +11,7 @@ const Reservas = () => {
         setActiveTab("reservas");
     }, []);
     return (
-        <div >
+        <div className="flex flex-col h-screen">
             <NavBar/>
             <div className="flex flex-col items-center p-5 mt-28">
                 <h1 className="text-3xl font-bold mb-4">Reservas</h1>
