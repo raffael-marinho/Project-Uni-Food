@@ -10,6 +10,8 @@ import logoMobile from "../assets/imagens/LogoMobile.svg";
 import banner01 from "../assets/imagens/Banner01.svg";
 import banner02 from "../assets/imagens/Banner02.svg";
 import banner03 from "../assets/imagens/Banner03.svg";
+import whatsapp from "../assets/imagens/Whatsapp.svg";
+import clock from "../assets/imagens/clock.svg";
 
 
 export { uni,
@@ -23,5 +25,7 @@ export { uni,
          logoMobile,
          banner01,
          banner02,
-         banner03
+         banner03,
+         whatsapp,
+         clock
 }
