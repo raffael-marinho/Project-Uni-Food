@@ -32,7 +32,10 @@ const CardVendedor: React.FC<CardVendedorProps> = ({ nome, status, telefone, ima
                 </h3>
                 <div className="flex flex-row items-center w-full">
                     <img src={clock} alt="clock" className="w-4 h-4 mr-2" />
-                    <p className="text-xs font-semibold overflow-hidden text-ellipsis whitespace-nowrap w-36">
+                    <p
+         className={`text-xs font-semibold overflow-hidden text-ellipsis whitespace-nowrap w-36 ${
+             status === 'Aberto' ? 'text-[#FF6A07]' : 'text-foreground' 
+                }`}>
                         {status}
                     </p>
                 </div>
