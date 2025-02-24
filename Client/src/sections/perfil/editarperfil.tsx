@@ -37,7 +37,8 @@ const EditarPerfil: React.FC = () => {
       console.error("Erro ao carregar usuário:", error);
       toast({"title": "Erro ao carregar usuário",
             "description": "Ocorreu um erro ao carregar os dados do usuário.",
-             "variant": "destructive"});
+             "variant": "destructive",
+             "duration": 5000});
       return "";
     }
   };
@@ -56,7 +57,8 @@ const EditarPerfil: React.FC = () => {
 
       toast({"title": "Perfil atualizado",
             "description": "Seu perfil foi atualizado com sucesso.",
-             "variant": "default"});
+             "variant": "default",
+             "duration": 5000});
 
       // Atualiza o contexto de autenticação
       if (user) {
