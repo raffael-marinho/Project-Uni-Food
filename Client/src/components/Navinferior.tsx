@@ -40,15 +40,15 @@ const NavInferior: React.FC = () => {
               key={tab.id}
               to={tab.route}
               className={`flex flex-col items-center justify-center px-5 ${
-                isActive ? "text-primary" : "text-[#DBBDAA] opacity-60"
+                isActive ? "text-primary" : "text-[#C5A38D] opacity-80 "
               }`}
             >
               <Icon
                 size={28}
                 strokeWidth={2}
-                className={isActive ? "text-primary" : "text-[#DBBDAA] opacity-50"}
+                className={isActive ? "text-primary" : "text-[#C5A38D] "}
               />
-              <span className={`text-sm font-semibold ${isActive ? "text-primary" : "text-[#DBBDAA] opacity-60"}`}>
+              <span className={`text-sm font-semibold ${isActive ? "text-primary" : "text-[#C5A38D]"}`}>
                 {tab.label}
               </span>
             </NavLink>
