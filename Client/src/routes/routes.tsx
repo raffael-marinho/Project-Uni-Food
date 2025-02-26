@@ -9,6 +9,7 @@ import Perfil from '../sections/perfil/perfil'
 import Reservas from '../sections/reservas/reservas'
 import Pesquisar from '@/sections/pesquisar/pesquisar'
 import EditarPerfil from '../sections/perfil/editarperfil'
+import DetalhesProduto from '@/sections/detalhesproduto/DetalheProduto'
 
 
 export const AppRoutes = () => {
@@ -24,6 +25,7 @@ export const AppRoutes = () => {
             <Route path="/reservas" element={<Reservas />} />
             <Route path="/pesquisar" element={<Pesquisar />} />
             <Route path="/editarperfil/:id" element={<EditarPerfil />} />
+            <Route path="detalhesproduto/:id" element={<DetalhesProduto />} />
         </Routes>
     )
 }
