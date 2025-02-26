@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Esquema do Produto
 const produtoSchema = new mongoose.Schema({
   nome: {
     type: String,
@@ -11,14 +10,23 @@ const produtoSchema = new mongoose.Schema({
     required: true,
     maxlength: 500,
   },
+  ingredientes: [{
+    type: String,
+  }],
+  imagem: {
+    type: String,
+    required: true,
+  },
   preco: {
     type: Number,
     required: true,
     min: 0,
   },
-  imagens: [{
-    type: String, // Caminhos ou URLs das imagens
-  }],
+  quantidade: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
   vendedor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vendedor', // Relaciona o produto a um vendedor
