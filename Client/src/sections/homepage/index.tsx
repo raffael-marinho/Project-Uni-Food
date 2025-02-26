@@ -13,8 +13,10 @@ import CardVendedor from '@/components/CardVendedor';
 import { dadosLanches } from '@/assets/dadoscards';
 import { dadosVendedor } from '@/assets/dadosvendedor';
 import Loading from '@/components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { setActiveTab } = useNav();
   const [loading, setLoading] = useState(true);
@@ -25,7 +27,7 @@ const Home = () => {
     setActiveTab("inicio");
     setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
   // Função para carregar mais vendedores
@@ -38,12 +40,12 @@ const Home = () => {
     }, 1000); 
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    const bottom = e.currentTarget.scrollHeight === e.currentTarget.scrollTop + e.currentTarget.clientHeight;
-    if (bottom) {
-      carregarMaisVendedores();
-    }
-  };
+ const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+  const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+  if (scrollTop + clientHeight >= scrollHeight - 10) {
+    carregarMaisVendedores();
+  }
+};
 
   return (
     <div className='flex flex-col h-screen'>
@@ -83,13 +85,20 @@ const Home = () => {
         <div>
           <h1 className='text-base font-semibold pt-4 pb-2'>Lanches Recomendados</h1>
           <div className='flex px-1 gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden'>
-            {dadosLanches.map((lanche) => (
-              <CardLanche key={lanche.id}
-                titulo={lanche.titulo}
-                vendedor={lanche.vendedor}
-                preco={lanche.preco}
-                imagem={lanche.imagem} />
-            ))}
+          {dadosLanches.map((lanche) => (
+          <div
+            key={lanche.id}
+            onClick={() => navigate(`/detalhesproduto/${lanche.id}`)} // Ação de clique
+            className="cursor-pointer" // Adiciona cursor de clique para indicar interatividade
+          >
+            <CardLanche
+              titulo={lanche.titulo}
+              vendedor={lanche.vendedor}
+              preco={lanche.preco}
+              imagem={lanche.imagem}
+            />
+          </div>
+        ))}
           </div>
 
           <div className='pt-4'>
