@@ -4,8 +4,8 @@ const clienteSchema = new mongoose.Schema({
   nome: {
     type: String,
     required: true,
-    min: 5,
-    max: 50,
+    minlength: 5,
+    maxlength: 50,
   },
   email: {
     type: String,
@@ -20,10 +20,6 @@ const clienteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  pedidos: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Pedido',
-  }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Cliente', clienteSchema);
