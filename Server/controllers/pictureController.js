@@ -1,67 +1,145 @@
 const Vendedor = require("../models/Vendedor");
-const fs = require("fs");
+const bucket = require("../config/firebaseConfig");
 
-// Salvar imagem e associar a um usuário vendedor
+// Salvar imagem e associar a um vendedor
 exports.create = async (req, res) => {
     try {
         const { vendedorId } = req.body;
         const file = req.file;
-        // Verificar se foi enviada alguma imagem
+
         if (!file) {
             return res.status(400).json({ msg: "Nenhuma imagem foi enviada." });
         }
-        
 
-        // Verificar se o usuário existe
+        // Verificar se o vendedor existe
         const vendedor = await Vendedor.findById(vendedorId);
         if (!vendedor) {
-            return res.status(404).json({ msg: "Usuário não encontrado" });
+            return res.status(404).json({ msg: "Vendedor não encontrado." });
         }
 
-        // Atualizar o caminho da imagem no usuário
-        vendedor.imagemPerfil = file.path;
-        await vendedor.save();
+        // Criar referência no Firebase Storage
+        const fileName = `vendedores/${vendedorId}_${Date.now()}_${file.originalname}`;
+        const firebaseFile = bucket.file(fileName);
+        const stream = firebaseFile.createWriteStream({
+            metadata: { contentType: file.mimetype }
+        });
 
-        res.json({ vendedor, msg: "Imagem salva e associada ao vendedor com sucesso!" });
+        stream.on("error", (err) => res.status(500).json({ msg: "Erro ao fazer upload.", error: err }));
+
+        stream.on("finish", async () => {
+            await firebaseFile.makePublic(); // Torna a imagem pública
+            const imageUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+
+            // Atualizar a imagem do vendedor no banco de dados
+            vendedor.imagemPerfil = imageUrl;
+            await vendedor.save();
+
+            res.json({ vendedor, msg: "Imagem salva e associada ao vendedor com sucesso!", imageUrl });
+        });
+
+        stream.end(file.buffer);
+
     } catch (error) {
-        res.status(500).json({ message: "Erro ao salvar imagem." });
+        res.status(500).json({ message: "Erro ao salvar imagem.", error });
     }
 };
-
-// Buscar todas as imagens (não é necessário neste caso, pois as imagens estão associadas aos usuários)
 
 // Remover imagem
 exports.remove = async (req, res) => {
     try {
         const { vendedorId } = req.body;
 
-        // Verificar se o usuário existe
+        // Verificar se o vendedor existe
         const vendedor = await Vendedor.findById(vendedorId);
         if (!vendedor) {
-            console.log("Vendedor não encontrado");
-            return res.status(404).json({ message: "Vendedor não encontrado" });
+            return res.status(404).json({ msg: "Vendedor não encontrado." });
         }
 
-        // Remover a imagem do sistema de arquivos
-        if (vendedor.imagemPerfil) {
-            try {
-                fs.unlinkSync(vendedor.imagemPerfil);
-                console.log("Imagem removida do sistema de arquivos");
-            } catch (err) {
-                console.error("Erro ao remover a imagem do sistema de arquivos:", err);
-                return res.status(500).json({ message: "Erro ao excluir imagem do sistema de arquivos." });
-            }
-        } else {
-            console.log("Nenhuma imagem para remover");
+        // Verificar se há uma imagem associada
+        if (!vendedor.imagemPerfil) {
+            return res.status(400).json({ msg: "Nenhuma imagem para remover." });
         }
 
-        // Limpar o campo picturePath do usuário
+        // Extrair o nome do arquivo do URL
+        const fileName = vendedor.imagemPerfil.split("/").pop();
+        const firebaseFile = bucket.file(`vendedores/${fileName}`);
+
+        // Remover a imagem do Firebase Storage
+        await firebaseFile.delete();
+
+        // Remover a referência no banco de dados
         vendedor.imagemPerfil = "";
         await vendedor.save();
 
-        res.json({ message: "Imagem removida e campo imagemPerfil atualizado com sucesso!" });
+        res.json({ msg: "Imagem removida com sucesso!" });
+
     } catch (error) {
-        console.error("Erro ao excluir imagem:", error);
-        res.status(500).json({ message: "Erro ao excluir imagem." });
+        res.status(500).json({ message: "Erro ao excluir imagem.", error });
     }
 };
+
+exports.update = async (req, res) => {
+    try {
+        const { vendedorId } = req.body;
+        const novaImagem = req.file;
+
+        if (!novaImagem) {
+            return res.status(400).json({ msg: "Nenhuma imagem enviada." });
+        }
+
+        // Encontra o vendedor no banco
+        const vendedor = await Vendedor.findById(vendedorId);
+        if (!vendedor) {
+            return res.status(404).json({ msg: "Vendedor não encontrado." });
+        }
+
+        // Se já existir uma imagem, apaga do Firebase
+        if (vendedor.imagemPerfil) {
+            await bucket.file(vendedor.imagemPerfil).delete();
+            console.log("✅ Imagem antiga apagada:", vendedor.imagemPerfil);
+        }
+
+        // Define novo caminho da imagem
+        const newImageName = `users/vendedor_${Date.now()}.png`;
+        const file = bucket.file(newImageName);
+
+        // Faz o upload da nova imagem
+        await file.save(novaImagem.buffer, {
+            metadata: { contentType: novaImagem.mimetype },
+        });
+
+        console.log("✅ Nova imagem salva:", newImageName);
+
+        // Atualiza a referência no banco
+        vendedor.imagemPerfil = newImageName;
+        await vendedor.save();
+
+        return res.json({ msg: "Imagem atualizada com sucesso!", imagemPerfil: newImageName });
+    } catch (error) {
+        console.error("❌ Erro ao atualizar imagem:", error);
+        return res.status(500).json({ msg: "Erro ao atualizar a imagem.", error });
+    }
+};
+
+exports.get = async (req, res) => {
+    try {
+        const { vendedorId } = req.params;
+        const vendedor = await Vendedor.findById(vendedorId);
+
+        if (!vendedor) {
+            return res.status(404).json({ msg: "Vendedor não encontrado." });
+        }
+
+        if (!vendedor.imagemPerfil) {
+            return res.status(404).json({ msg: "Nenhuma imagem associada ao vendedor." });
+        }
+
+        // Retornar a URL já armazenada no banco
+        return res.json({ url: vendedor.imagemPerfil });
+
+    } catch (error) {
+        console.error("❌ Erro ao buscar imagem:", error);
+        return res.status(500).json({ msg: "Erro ao buscar a imagem.", error });
+    }
+};
+

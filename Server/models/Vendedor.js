@@ -35,7 +35,7 @@ const vendedorSchema = new mongoose.Schema({
   },
   chavePix: {
     type: String,
-    required: true,
+    default: '',
   },
 }, { timestamps: true });
 

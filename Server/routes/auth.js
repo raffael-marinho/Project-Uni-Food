@@ -2,7 +2,9 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const app = express();
+const multer = require('multer');
+
+const bucket = require('../config/firebaseConfig');
 
 const router = express.Router();
 
@@ -45,24 +47,61 @@ router.post('/register/:tipo', upload.single('image'), async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(senha, salt);
 
-    const imagemPerfil = req.file ? req.file.path : null;
+    let imageUrl = null;
+
+    // Se uma imagem foi enviada, fazer upload para Firebase Storage
+    if (req.file) {
+        try {
+            const fileName = `users/${tipo}_${Date.now()}_${req.file.originalname}`;
+            const firebaseFile = bucket.file(fileName);
+            const stream = firebaseFile.createWriteStream({ metadata: { contentType: req.file.mimetype } });
+    
+            await new Promise((resolve, reject) => {
+                stream.on("error", (err) => {
+                    console.error("Erro no upload para Firebase:", err);
+                    reject(err);
+                });
+    
+                stream.on("finish", async () => {
+                    console.log("Upload finalizado! Tornando a imagem pública...");
+                    await firebaseFile.makePublic();
+    
+                    imageUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+                    console.log("Imagem salva no Firebase:", imageUrl);
+    
+                    resolve();
+                });
+    
+                stream.end(req.file.buffer);
+            });
+    
+        } catch (error) {
+            console.error("Erro ao fazer upload da imagem:", error);
+            return res.status(500).json({ msg: "Erro ao fazer upload da imagem.", error });
+        }
+    }
+    
 
     // Criar o novo usuário
     const user = new Model({
         nome,
         email,
         senha: passwordHash,
-        imagemPerfil,
+        imagemPerfil: imageUrl, // Agora a URL da imagem é salva no banco
         telefone
     });
 
     try {
         await user.save();
-        res.status(201).json({ msg: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} criado com sucesso!` });
+        res.status(201).json({ 
+            msg: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} criado com sucesso!`,
+            user
+        });
     } catch (error) {
-        res.status(500).json({ msg: 'Erro no servidor' });
+        res.status(500).json({ msg: 'Erro no servidor', error });
     }
 });
+
 
 // Login
 router.post("/login/:tipo", async (req, res) => {
