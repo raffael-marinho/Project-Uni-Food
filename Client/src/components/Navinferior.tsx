@@ -18,7 +18,7 @@ const NavInferior: React.FC = () => {
 
   const tabs: Tab[] = [
     { id: "inicio", label: "Início", icon: Home, route: "/home" },
-    { id: "reservas", label: "Reservas", icon: Calendar, route: "/reservas" },
+    { id: "pedidos", label: "Pedidos", icon: Calendar, route: "/pedidos" },
     { id: "pesquisar", label: "Pesquisar", icon: Search, route: "/pesquisar" },
         { 
       id: "perfil", 

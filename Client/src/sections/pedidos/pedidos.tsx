@@ -4,11 +4,11 @@ import NavInferior from "../../components/Navinferior"
 import { useNav } from "../../context/nav-context"
 import { useEffect } from "react";
 
-const Reservas = () => {    
+const Pedidos = () => {    
     const { setActiveTab } = useNav();
     const {user} = useAuth();
     useEffect(() => {
-        setActiveTab("reservas");
+        setActiveTab("pedidos");
     }, []);
     return (
         <div className="flex flex-col h-screen">
@@ -22,4 +22,4 @@ const Reservas = () => {
     );
 };
 
-export default Reservas;
+export default Pedidos;
