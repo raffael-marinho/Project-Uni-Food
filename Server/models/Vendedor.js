@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
-// Esquema do Vendedor
 const vendedorSchema = new mongoose.Schema({
   nome: {
     type: String,
     required: true,
-    min: 5,
-    max: 50,
+    minlength: 5,
+    maxlength: 50,
   },
   email: {
     type: String,
@@ -27,16 +25,18 @@ const vendedorSchema = new mongoose.Schema({
     default: '',
   },
   imagemPerfil: {
-    type: String, // Caminho ou URL da imagem
+    type: String,
     default: '',
   },
-  produtos: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Produto', // Relaciona com os produtos
-  }],
+  status: {
+    type: String,
+    enum: ['aberto', 'fechado'],
+    default: 'aberto',
+  },
+  chavePix: {
+    type: String,
+    required: true,
+  },
 }, { timestamps: true });
-
-
-
 
 module.exports = mongoose.model('Vendedor', vendedorSchema);
