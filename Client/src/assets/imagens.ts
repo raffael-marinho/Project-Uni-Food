@@ -12,6 +12,7 @@ import banner02 from "../assets/imagens/Banner02.svg";
 import banner03 from "../assets/imagens/Banner03.svg";
 import whatsapp from "../assets/imagens/Whatsapp.svg";
 import clock from "../assets/imagens/clock.svg";
+import Divisão from "../assets/imagens/DivisãoReserva.svg";
 
 
 export { uni,
@@ -27,5 +28,6 @@ export { uni,
          banner02,
          banner03,
          whatsapp,
-         clock
+         clock,
+         Divisão
 }
