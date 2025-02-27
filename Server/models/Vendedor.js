@@ -12,9 +12,15 @@ const vendedorSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  /*
   senha: {
     type: String,
     required: true,
+  },*/
+  firebaseUID: { // Identificador do Firebase
+    type: String,
+    required: true,
+    unique: true,
   },
   telefone: {
     type: String,
