@@ -21,10 +21,10 @@ const Pedidos = () => {
         <div className="flex flex-col h-screen">
             <NavBar />
             <div className="flex flex-col  p-5  text-base font-semibold pb-2">
-                {/* <h1 className="text-3xl font-bold mb-4">Pedidos</h1> */}
-            
-                <p className="text-lg">Aqui estão os seus pedidos:</p>
-                <div className="w-full max-w-md space-y-4 mt-6">
+              <div>
+                <h1 className="text-2xl font-semibold">Meus Pedidos</h1>
+                <p className="text-xs pb-4">Aqui estão os seus pedidos</p>
+                <div className="flex flex-col gap-4">
                     {pedidos.map((pedido, index) => (
                         <CardPedido 
                             key={index} 
@@ -36,6 +36,8 @@ const Pedidos = () => {
                         />
                     ))}
                 </div>
+              </div>
+              
             </div>
             <NavInferior />
         </div>
