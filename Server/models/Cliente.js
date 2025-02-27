@@ -12,14 +12,15 @@ const clienteSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  senha: {
-    type: String,
-    required: true,
-  },
   telefone: {
     type: String,
     required: true,
   },
+  firebaseUID: { // Identificador do Firebase
+    type: String,
+    required: true,
+    unique: true,
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Cliente', clienteSchema);

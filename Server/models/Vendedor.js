@@ -12,9 +12,10 @@ const vendedorSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  senha: {
+  firebaseUID: { // Identificador do Firebase
     type: String,
     required: true,
+    unique: true,
   },
   telefone: {
     type: String,
@@ -35,7 +36,11 @@ const vendedorSchema = new mongoose.Schema({
   },
   chavePix: {
     type: String,
-    required: true,
+    default: '',
+  },
+  imagemCapa: {
+    type: String,
+    default: '',
   },
 }, { timestamps: true });
 

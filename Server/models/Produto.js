@@ -15,7 +15,7 @@ const produtoSchema = new mongoose.Schema({
   }],
   imagem: {
     type: String,
-    required: true,
+    default: '',
   },
   preco: {
     type: Number,
