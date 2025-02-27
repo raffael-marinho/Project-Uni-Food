@@ -13,14 +13,6 @@ const {
 } = require('../middlewares/validacoes');
 
 
-// Rota para criar um vendedor
-router.post("/",
-    validarDadosObrigatorios,
-    validarDominioEmail,
-    validarEmailUnico('vendedor'),
-    validarFormatoSenha,
-    VendedorController.postVendedor);
-
 
 // Rota para obter todos os vendedores
 router.get("/",

@@ -24,9 +24,9 @@ const getModelByType = (tipo) => {
 };
 
 // Register
-router.post('/register/:tipo', upload.single('image'), async (req, res) => {
+router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 'imagemCapa' }]), async (req, res) => {
     const { nome, email, senha, confirmasenha, telefone } = req.body;
-    const { tipo } = req.params; // Obter o tipo (vendedor ou cliente)
+    const { tipo } = req.params; // Tipo: vendedor ou cliente
 
     if (!nome || !email || !senha) {
         return res.status(422).json({ msg: 'Campos obrigatórios' });
@@ -43,64 +43,79 @@ router.post('/register/:tipo', upload.single('image'), async (req, res) => {
         return res.status(422).json({ msg: 'E-mail já em uso' });
     }
 
-    // Criar senha
+    // Criar senha criptografada
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(senha, salt);
 
-    let imageUrl = null;
+    let imagemPerfilUrl = null;
+    let imagemCapaUrl = null;
 
-    // Se uma imagem foi enviada, fazer upload para Firebase Storage
-    if (req.file) {
+    // Função para fazer upload da imagem no Firebase
+    const uploadImagem = async (file, folder) => {
         try {
-            const fileName = `users/${tipo}_${Date.now()}_${req.file.originalname}`;
+            const fileName = `${folder}/${tipo}_${Date.now()}_${file.originalname}`;
             const firebaseFile = bucket.file(fileName);
-            const stream = firebaseFile.createWriteStream({ metadata: { contentType: req.file.mimetype } });
-    
+            const stream = firebaseFile.createWriteStream({ metadata: { contentType: file.mimetype } });
+
             await new Promise((resolve, reject) => {
                 stream.on("error", (err) => {
                     console.error("Erro no upload para Firebase:", err);
                     reject(err);
                 });
-    
-                stream.on("finish", async () => {
-                    console.log("Upload finalizado! Tornando a imagem pública...");
-                    await firebaseFile.makePublic();
-    
-                    imageUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-                    console.log("Imagem salva no Firebase:", imageUrl);
-    
-                    resolve();
-                });
-    
-                stream.end(req.file.buffer);
-            });
-    
-        } catch (error) {
-            console.error("Erro ao fazer upload da imagem:", error);
-            return res.status(500).json({ msg: "Erro ao fazer upload da imagem.", error });
-        }
-    }
-    
 
-    // Criar o novo usuário
-    const user = new Model({
-        nome,
-        email,
-        senha: passwordHash,
-        imagemPerfil: imageUrl, // Agora a URL da imagem é salva no banco
-        telefone
-    });
+                stream.on("finish", async () => {
+                    console.log(`Upload de ${folder} finalizado! Tornando a imagem pública...`);
+                    await firebaseFile.makePublic();
+
+                    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+                    console.log(`${folder} salva no Firebase:`, imageUrl);
+
+                    resolve(imageUrl);
+                });
+
+                stream.end(file.buffer);
+            });
+
+            return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+        } catch (error) {
+            console.error(`Erro ao fazer upload da ${folder}:`, error);
+            throw new Error(`Erro ao fazer upload da ${folder}.`);
+        }
+    };
 
     try {
+        // Upload da imagem de perfil, se enviada
+        if (req.files.imagemPerfil) {
+            imagemPerfilUrl = await uploadImagem(req.files.imagemPerfil[0], 'perfil');
+        }
+
+        // Upload da imagem de capa, se enviada
+        if (req.files.imagemCapa) {
+            imagemCapaUrl = await uploadImagem(req.files.imagemCapa[0], 'capa');
+        }
+
+        // Criar o novo usuário
+        const user = new Model({
+            nome,
+            email,
+            senha: passwordHash,
+            telefone,
+            imagemPerfil: imagemPerfilUrl, 
+            imagemCapa: imagemCapaUrl
+        });
+
         await user.save();
-        res.status(201).json({ 
+        res.status(201).json({
             msg: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} criado com sucesso!`,
             user
         });
+
     } catch (error) {
+        console.error("Erro ao cadastrar usuário:", error);
         res.status(500).json({ msg: 'Erro no servidor', error });
     }
 });
+
 
 
 // Login

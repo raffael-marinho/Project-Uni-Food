@@ -37,6 +37,10 @@ const vendedorSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  imagemCapa: {
+    type: String,
+    default: '',
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Vendedor', vendedorSchema);
