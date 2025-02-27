@@ -3,7 +3,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-const { getAuth } = require("firebase-admin/auth");
+const { getAuth,sendPasswordResetEmail } = require("firebase-admin/auth");
 const axios = require("axios");
 require("dotenv").config();
 
@@ -118,100 +118,6 @@ router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 
 module.exports = router;
 
 
-/*
-router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 'imagemCapa' }]), async (req, res) => {
-    const { nome, email, senha, confirmasenha, telefone } = req.body;
-    const { tipo } = req.params; // Tipo: vendedor ou cliente
-
-    if (!nome || !email || !senha) {
-        return res.status(422).json({ msg: 'Campos obrigatórios' });
-    }
-    if (senha !== confirmasenha) {
-        return res.status(422).json({ msg: 'As senhas não conferem' });
-    }
-
-    const Model = getModelByType(tipo);
-
-    // Checar se o usuário já existe
-    const userExist = await Model.findOne({ email });
-    if (userExist) {
-        return res.status(422).json({ msg: 'E-mail já em uso' });
-    }
-
-    // Criar senha criptografada
-    const salt = await bcrypt.genSalt(12);
-    const passwordHash = await bcrypt.hash(senha, salt);
-
-    let imagemPerfilUrl = null;
-    let imagemCapaUrl = null;
-
-    // Função para fazer upload da imagem no Firebase
-    const uploadImagem = async (file, folder) => {
-        try {
-            const fileName = `${folder}/${tipo}_${Date.now()}_${file.originalname}`;
-            const firebaseFile = bucket.file(fileName);
-            const stream = firebaseFile.createWriteStream({ metadata: { contentType: file.mimetype } });
-
-            await new Promise((resolve, reject) => {
-                stream.on("error", (err) => {
-                    console.error("Erro no upload para Firebase:", err);
-                    reject(err);
-                });
-
-                stream.on("finish", async () => {
-                    console.log(`Upload de ${folder} finalizado! Tornando a imagem pública...`);
-                    await firebaseFile.makePublic();
-
-                    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-                    console.log(`${folder} salva no Firebase:`, imageUrl);
-
-                    resolve(imageUrl);
-                });
-
-                stream.end(file.buffer);
-            });
-
-            return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-        } catch (error) {
-            console.error(`Erro ao fazer upload da ${folder}:`, error);
-            throw new Error(`Erro ao fazer upload da ${folder}.`);
-        }
-    };
-
-    try {
-        // Upload da imagem de perfil, se enviada
-        if (req.files.imagemPerfil) {
-            imagemPerfilUrl = await uploadImagem(req.files.imagemPerfil[0], 'perfil');
-        }
-
-        // Upload da imagem de capa, se enviada
-        if (req.files.imagemCapa) {
-            imagemCapaUrl = await uploadImagem(req.files.imagemCapa[0], 'capa');
-        }
-
-        // Criar o novo usuário
-        const user = new Model({
-            nome,
-            email,
-            senha: passwordHash,
-            telefone,
-            imagemPerfil: imagemPerfilUrl, 
-            imagemCapa: imagemCapaUrl
-        });
-
-        await user.save();
-        res.status(201).json({
-            msg: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} criado com sucesso!`,
-            user
-        });
-
-    } catch (error) {
-        console.error("Erro ao cadastrar usuário:", error);
-        res.status(500).json({ msg: 'Erro no servidor', error });
-    }
-});
-
-*/
 
 // Login
 router.post("/login/:tipo", async (req, res) => {
@@ -265,6 +171,8 @@ router.post("/login/:tipo", async (req, res) => {
     }
 });
 
+
+// função de fazer uma redefinição de senha
 router.post("/reset-password", async (req, res) => {
     const { email } = req.body;
 
@@ -275,15 +183,15 @@ router.post("/reset-password", async (req, res) => {
     try {
         // Gera um link para redefinição de senha
         const resetLink = await admin.auth().generatePasswordResetLink(email);
-        
+
         res.status(200).json({
-            msg: "Link para redefinir a senha enviado para o e-mail",
+            msg: "Link para redefinição de senha gerado com sucesso",
             link: resetLink
         });
 
     } catch (error) {
         console.error("Erro ao enviar redefinição de senha:", error);
-        res.status(500).json({ msg: "Erro ao processar a solicitação" });
+        res.status(500).json({ msg: "Erro ao processar a solicitação", error: error.message });
     }
 });
 
