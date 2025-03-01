@@ -20,7 +20,9 @@ const Pesquisar = () => {
     return (
        <div className="flex flex-col h-screen">
             <NavBar />
-            <BarraPesque />
+            <div className="mt-8 mb-5">
+                <BarraPesque />
+            </div>
             <div className="flex flex-col  p-5  text-base font-semibold pb-2">
                 <div className="flex flex-col gap-4">
 
