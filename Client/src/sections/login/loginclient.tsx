@@ -6,13 +6,12 @@ import { Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast.ts"; 
 import { useNavigate } from 'react-router-dom';
-
+import  apiUrl from "../../utils/Api.ts";
 
 function LoginClient() {
   const { login } = useAuth(); 
   const { toast } = useToast();  
   const navigate = useNavigate();
-
 
   return (
     <div className="flex flex-col items-center h-screen">
@@ -28,7 +27,7 @@ validationSchema={Yup.object({
 })}
 onSubmit={async (values, { setSubmitting }) => {
   try {
-    const response = await fetch(`http://localhost:3000/auth/login/cliente`, {
+    const response = await fetch(`${apiUrl}/auth/login/cliente`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
