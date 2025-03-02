@@ -10,6 +10,7 @@ import Pesquisar from '@/sections/pesquisar/pesquisar'
 import EditarPerfil from '../sections/perfil/editarperfil'
 import DetalhesProduto from '@/sections/detalhesproduto/DetalheProduto'
 import Pedidos from '../sections/pedidos/pedidos'
+import Homevendedor from '../sections/homevendedor/index'
 
 
 export const AppRoutes = () => {
@@ -26,6 +27,7 @@ export const AppRoutes = () => {
             <Route path="/pesquisar" element={<Pesquisar />} />
             <Route path="/editarperfil/:id" element={<EditarPerfil />} />
             <Route path="detalhesproduto/:id" element={<DetalhesProduto />} />
+            <Route path="/homevendedor" element={<Homevendedor />} />
         </Routes>
     )
 }
