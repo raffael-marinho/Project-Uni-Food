@@ -5,6 +5,7 @@ import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useToast } from "@/hooks/use-toast";
+import apiUrl from "@/utils/Api";
 
 interface User {
   id: string;
@@ -28,7 +29,7 @@ const EditarPerfil: React.FC = () => {
   // Função assíncrona para buscar dados do usuário
   const fetchUserData = async (): Promise<string> => {
     try {
-      const { data } = await axios.get<User>(`http://localhost:3000/cliente/${id}`, {
+      const { data } = await axios.get<User>(`${apiUrl}/cliente/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
@@ -50,7 +51,7 @@ const EditarPerfil: React.FC = () => {
   const handleSubmit = async (values: { nome: string }) => {
     try {
       await axios.put(
-        `http://localhost:3000/cliente/${id}`,
+        `${apiUrl}/cliente/${id}`,
         { nome: values.nome },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
