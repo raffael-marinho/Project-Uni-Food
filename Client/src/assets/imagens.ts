@@ -13,7 +13,7 @@ import banner03 from "../assets/imagens/Banner03.svg";
 import whatsapp from "../assets/imagens/Whatsapp.svg";
 import clock from "../assets/imagens/clock.svg";
 import Divisão from "../assets/imagens/DivisãoReserva.svg";
-import ImgUser from '../assets/imagens/ImgUser.svg'; 
+import ImgUser from '../assets/imagens/User.png'; 
 import capa from "../assets/imagens/capa.jpg"; 
 
 export { 
