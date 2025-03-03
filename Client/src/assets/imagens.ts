@@ -14,7 +14,7 @@ import whatsapp from "../assets/imagens/Whatsapp.svg";
 import clock from "../assets/imagens/clock.svg";
 import Divisão from "../assets/imagens/DivisãoReserva.svg";
 <<<<<<< HEAD
-import ImgUser from "../assets/imagens/User.png";
+import ImgUser from '../assets/imagens/ImgUser.svg'
 =======
 import capa from "../assets/imagens/capa.jpg";
 
