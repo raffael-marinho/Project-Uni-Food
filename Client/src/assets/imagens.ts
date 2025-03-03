@@ -13,7 +13,12 @@ import banner03 from "../assets/imagens/Banner03.svg";
 import whatsapp from "../assets/imagens/Whatsapp.svg";
 import clock from "../assets/imagens/clock.svg";
 import Divisão from "../assets/imagens/DivisãoReserva.svg";
+<<<<<<< HEAD
 import ImgUser from "../assets/imagens/User.png";
+=======
+import capa from "../assets/imagens/capa.jpg";
+
+>>>>>>> d0581fb (style: adicionando imagem de capa)
 
 export { uni,
          mercado,
@@ -30,5 +35,9 @@ export { uni,
          whatsapp,
          clock,
          Divisão,
+<<<<<<< HEAD
          ImgUser
+=======
+         capa
+>>>>>>> d0581fb (style: adicionando imagem de capa)
 }
