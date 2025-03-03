@@ -6,14 +6,12 @@ import CardProduto from "../../components/cardProduto"; // Card original
 import CardMaisVendido from "../../components/cardMaisVendido"; // Novo card para "Mais Vendidos"
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
-import { useNavigate } from "react-router-dom";
 import { dadosLanches } from "@/assets/dadoscards"; // Importe os dados dos lanches
 
 const VendedorPerfil: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [produtosExibidos, setProdutosExibidos] = useState(3); // Número inicial de produtos exibidos
   const [loadingMore, setLoadingMore] = useState(false);
-  const navigate = useNavigate();
 
   // Simulação de carregamento de dados
   useEffect(() => {

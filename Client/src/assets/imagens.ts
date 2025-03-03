@@ -13,31 +13,25 @@ import banner03 from "../assets/imagens/Banner03.svg";
 import whatsapp from "../assets/imagens/Whatsapp.svg";
 import clock from "../assets/imagens/clock.svg";
 import Divisão from "../assets/imagens/DivisãoReserva.svg";
-<<<<<<< HEAD
-import ImgUser from '../assets/imagens/ImgUser.svg'
-=======
-import capa from "../assets/imagens/capa.jpg";
+import ImgUser from '../assets/imagens/ImgUser.svg'; 
+import capa from "../assets/imagens/capa.jpg"; 
 
->>>>>>> d0581fb (style: adicionando imagem de capa)
-
-export { uni,
-         mercado,
-         data,
-         lanche,
-         client,
-         chef,
-         shoppingcart,
-         menu,
-         logoMobile,
-         banner01,
-         banner02,
-         banner03,
-         whatsapp,
-         clock,
-         Divisão,
-<<<<<<< HEAD
-         ImgUser
-=======
-         capa
->>>>>>> d0581fb (style: adicionando imagem de capa)
+export { 
+  uni,
+  mercado,
+  data,
+  lanche,
+  client,
+  chef,
+  shoppingcart,
+  menu,
+  logoMobile,
+  banner01,
+  banner02,
+  banner03,
+  whatsapp,
+  clock,
+  Divisão,
+  ImgUser,
+  capa
 }
