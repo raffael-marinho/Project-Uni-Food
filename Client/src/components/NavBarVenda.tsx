@@ -4,21 +4,16 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react"; // Certifique-se de importar o novo ícone aqui
 
 const NavBarVenda: React.FC = () => {
   return (
     <nav className="bg-background sticky left-0 top-0 w-full shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center py-3 px-4">
-        
         {/* Botão de Menu */}
         <SheetDemo />
 
