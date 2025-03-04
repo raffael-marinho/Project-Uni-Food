@@ -12,7 +12,7 @@ import {
 
 const NavBarVenda: React.FC = () => {
   return (
-    <nav className="bg-background sticky left-0 top-0 w-full shadow-md z-50">
+    <nav className="bg-background sticky left-0 top-0 w-full shadow-md z-50 pt-5">
       <div className="container mx-auto flex justify-between items-center py-3 px-4">
         {/* Botão de Menu */}
         <SheetDemo />
@@ -37,7 +37,7 @@ const NavBarVenda: React.FC = () => {
 const SheetDemo: React.FC = () => {
   return (
     <Sheet>
-      <SheetTrigger className="hover:bg-[#FAAB35] hover:text-white duration-200" asChild>
+      <SheetTrigger className="hover:bg-[#FAAB35] hover:text-white duration-200 " asChild>
         <Button variant="ghost" className="w-12 h-12 ">
           <Menu className="w-6 h-6 " /> {/* Ícone de menu */}
         </Button>
@@ -48,7 +48,7 @@ const SheetDemo: React.FC = () => {
         </SheetHeader>
 
         {/* Conteúdo do Menu */}
-        <div className="mt-8 space-y-4 ">
+        <div className="mt-8 space-y-4">
           <Button
             variant="ghost"
             className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
