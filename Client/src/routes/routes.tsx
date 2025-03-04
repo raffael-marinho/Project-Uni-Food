@@ -11,7 +11,8 @@ import EditarPerfil from '../sections/perfil/editarperfil'
 import DetalhesProduto from '@/sections/detalhesproduto/DetalheProduto'
 import Pedidos from '../sections/pedidos/pedidos'
 import Homevendedor from '../sections/homevendedor/index'
-
+import Confirmar from '../sections/checkout/confimar'
+import Error from '@/sections/checkout/error'
 
 export const AppRoutes = () => {
     return (
@@ -28,6 +29,8 @@ export const AppRoutes = () => {
             <Route path="/editarperfil/:id" element={<EditarPerfil />} />
             <Route path="detalhesproduto/:id" element={<DetalhesProduto />} />
             <Route path="/homevendedor" element={<Homevendedor />} />
+            <Route path="/confirmarpedido" element={<Confirmar/>} />
+            <Route path="/erropedido" element={<Error />} />
         </Routes>
     )
 }
