@@ -59,6 +59,12 @@ const SheetDemo: React.FC = () => {
             variant="ghost"
             className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
           >
+            Pedidos
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
+          >
             Sair
           </Button>
         </div>
