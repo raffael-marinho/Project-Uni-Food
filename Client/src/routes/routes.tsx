@@ -14,6 +14,7 @@ import Homevendedor from '../sections/homevendedor/index'
 import Confirmar from '../sections/checkout/confimar'
 import Error from '@/sections/checkout/error'
 import Checkout from '@/sections/checkout/checkout'
+import CadastroVenda from '../sections/CadastroVendedor/Cadven'
 
 export const AppRoutes = () => {
     return (
@@ -33,6 +34,7 @@ export const AppRoutes = () => {
             <Route path="/confirmarpedido" element={<Confirmar/>} />
             <Route path="/erropedido" element={<Error />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/cadastrovendedor" element={<CadastroVenda />} />
         </Routes>
     )
 }
