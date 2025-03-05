@@ -33,7 +33,7 @@ const CardVendedor: React.FC<CardVendedorProps> = ({ nome, status, telefone, ima
                     <img src={clock} alt="clock" className="w-4 h-4 mr-2" />
                     <p
                         className={`text-xs font-semibold overflow-hidden text-ellipsis whitespace-nowrap w-36 ${
-                            status === 'aberto' ? 'text-[#FF6A07]' : 'text-foreground' 
+                            status === 'Aberto' ? 'text-[#FF6A07]' : 'text-foreground' 
                         }`}>
                         {status}
                     </p>
