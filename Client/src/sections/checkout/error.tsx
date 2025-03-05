@@ -18,7 +18,7 @@ const Error = () => {
         const timer = setTimeout(() => {
             setIsLeaving(true);
             setTimeout(() => {
-                navigate("/pedidos", { replace: true }); 
+                navigate("/home", { replace: true }); 
             }, 500); 
         }, 4000);
 
