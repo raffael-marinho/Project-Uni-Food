@@ -14,7 +14,7 @@ import Homevendedor from '../sections/homevendedor/index'
 import Confirmar from '../sections/checkout/confimar'
 import Error from '@/sections/checkout/error'
 import Checkout from '@/sections/checkout/checkout'
-import CadastroVenda from '../sections/CadastroVendedor/Cadven'
+import CadastroVenda from '../sections/cadastro/Cadven'
 
 export const AppRoutes = () => {
     return (
