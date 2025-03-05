@@ -1,45 +1,100 @@
-import NavBar from "../../components/Navbar"
-import NavInferior from "../../components/Navinferior"
-import { useNav } from "../../context/nav-context"
-import { useEffect } from "react";
-import CardPesquisa from "../../components/CardPesquisa"; 
-import BarraPesque from "../../components/BarraPesque";
+import { useEffect, useState } from "react";
+import apiUrl from "@/utils/Api";
+import CardVendedor from "@/components/CardVendedor";
+import Loading from "@/components/Loading";
+import BarraPesque from "@/components/BarraPesque";
+import NavBar from "../../components/Navbar";
+import NavInferior from "../../components/Navinferior";
+import { useNav } from "../../context/nav-context";
 
 const Pesquisar = () => {
-    const { setActiveTab } = useNav();
+  const { setActiveTab } = useNav();
 
-    useEffect(() => {
-        setActiveTab("pesquisar");
-      }, []);
+  useEffect(() => {
+    setActiveTab("pesquisar");
+  }, [setActiveTab]);
 
-    const Pesquisar = [
-        { nome: "Hambúrguer", imagem: "https://www.sabornamesa.com.br/media/k2/items/cache/bf1e20a4462b71e3cc4cece2a8c96ac8_XL.jpg", valor: " 7.50", descricao: "Delicioso hambúrguer artesanal" },
-        { nome: "Coxinha", imagem: "https://i0.wp.com/canaldareceita.com.br/wp-content/uploads/2024/09/COXINHA-FIT.jpg?fit=1000%2C600&ssl=1", valor: " 3.50", descricao: "Coxinha de frango com massa crocante" },
-    ];
-      
-    return (
-       <div className="flex flex-col h-screen">
-            <NavBar />
-            <div className="mt-8 mb-5">
-                <BarraPesque />
-            </div>
-            <div className="flex flex-col  p-5  text-base font-semibold pb-2">
-                <div className="flex flex-col gap-4">
+  const [termo, setTermo] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [vendedores, setVendedores] = useState<any[]>([]);
+  const [vendedoresFiltrados, setVendedoresFiltrados] = useState<any[]>([]);
 
-                    {Pesquisar.map((pesquisa, index) => (
-                        <CardPesquisa 
-                            key={index} 
-                            nome={pesquisa.nome} 
-                            imagem={pesquisa.imagem} 
-                            descricao={pesquisa.descricao}
-                            valor={pesquisa.valor}
-                        />
+  useEffect(() => {
+    const fetchVendedores = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/vendedor`);
+        if (!response.ok) throw new Error("Erro ao buscar vendedores");
+
+        const data = await response.json();
+        console.log("Vendedores recebidos:", data); 
+        setVendedores(data);
+      } catch (error) {
+        console.error("Erro na busca:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVendedores();
+  }, []);
+
+  useEffect(() => {
+    if (termo === "") {
+      setVendedoresFiltrados([]);
+    } else {
+      const filtered = vendedores.filter((vendedor) =>
+        vendedor.nome.toLowerCase().includes(termo.toLowerCase())
+      );
+      console.log("Vendedores filtrados:", filtered);
+      setVendedoresFiltrados(filtered);
+    }
+  }, [termo, vendedores]);
+
+  return (
+    <div className="flex flex-col h-screen">
+      <NavBar />
+
+      <div className="mt-8 mb-5">
+        <BarraPesque termo={termo} setTermo={setTermo} />
+      </div>
+
+      <div
+        className="flex flex-col p-4 overflow-y-auto mb-16"
+
+      >
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
+            {termo && (
+              <>
+                <h2 className="text-xl font-bold">Resultados para "{termo}"</h2>
+                <h1 className="text-lg font-bold mt-4">Vendedores</h1>
+                {vendedoresFiltrados.length > 0 ? (
+                  <div className="mt-4 flex flex-col gap-4">
+                    {vendedoresFiltrados.map((vendedor) => (
+                      <CardVendedor
+                        key={vendedor._id}
+                        nome={vendedor.nome}
+                        telefone={vendedor.telefone}
+                        status={vendedor.status}
+                        imagemPerfil={vendedor.imagemPerfil}
+                      />
                     ))}
-                 </div>
-             </div>
-            <NavInferior />
-        </div>
-    )
-}
+                  </div>
+                ) : (
+                  <p className="text-sm  mt-2">Nenhum vendedor encontrado.</p>
+                )}
+              </>
+            )}
+          </>
+        )}
 
-export default Pesquisar
+      </div>
+      <NavInferior />
+    </div>
+  );
+};
+
+export default Pesquisar;
