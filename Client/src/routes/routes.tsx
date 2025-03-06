@@ -15,6 +15,7 @@ import Confirmar from '../sections/checkout/confimar'
 import Error from '@/sections/checkout/error'
 import Checkout from '@/sections/checkout/checkout'
 import CadastroVenda from '../sections/cadastro/Cadven'
+import PedidosVendedor from '../sections/pedidosvendedor/PedidosVenda'
 
 export const AppRoutes = () => {
     return (
@@ -35,6 +36,7 @@ export const AppRoutes = () => {
             <Route path="/erropedido" element={<Error />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/cadastrovendedor" element={<CadastroVenda />} />
+            <Route path="/PedidosVendedor" element={<PedidosVendedor />} />
         </Routes>
     )
 }
