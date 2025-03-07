@@ -10,7 +10,6 @@ import "swiper/swiper-bundle.css";
 import { useAuth } from '@/context/auth-context';
 import CardLanche from '@/components/CardLanche';
 import CardVendedor from '@/components/CardVendedor';
-import { dadosLanches } from '@/assets/dadoscards';
 import Loading from '@/components/Loading';
 import { useNavigate } from 'react-router-dom';
 import apiUrl from '@/utils/Api';
@@ -21,36 +20,45 @@ const Home = () => {
   const { setActiveTab } = useNav();
   const [loading, setLoading] = useState(true);
   const [vendedores, setVendedores] = useState<any[]>([]); // Estado para armazenar vendedores da API
-  const [vendedoresExibidos, setVendedoresExibidos] = useState(3); 
-  const [loadingMore, setLoadingMore] = useState(false); 
+  const [produtos, setProdutos] = useState<any[]>([]);
+  const [vendedoresExibidos, setVendedoresExibidos] = useState(3);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     setActiveTab("inicio");
 
-    // Buscar vendedores da API
-    const fetchVendedores = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/vendedor`); // Substitua pelo endpoint real
-        const data = await response.json();
-        setVendedores(data); // Armazena os vendedores no estado
+        const [vendedoresRes, produtosRes] = await Promise.all([
+          fetch(`${apiUrl}/vendedor`),
+          fetch(`${apiUrl}/produto`)
+        ]);
+
+        const vendedoresData = await vendedoresRes.json();
+        const produtosData = await produtosRes.json();
+
+        setVendedores(vendedoresData);
+        setProdutos(produtosData);
       } catch (error) {
-        console.error("Erro ao buscar vendedores:", error);
+        console.error("Erro ao buscar dados:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Só define falso quando ambas as chamadas terminarem
       }
     };
 
-    fetchVendedores();
+    fetchData();
   }, []);
+
+
 
   // Função para carregar mais vendedores
   const carregarMaisVendedores = () => {
     if (loadingMore || vendedoresExibidos >= vendedores.length) return;
     setLoadingMore(true);
     setTimeout(() => {
-      setVendedoresExibidos(prevState => prevState + 3); 
+      setVendedoresExibidos(prevState => prevState + 3);
       setLoadingMore(false);
-    }, 1000); 
+    }, 1000);
   };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -98,20 +106,21 @@ const Home = () => {
         <div>
           <h1 className='text-base font-semibold pt-4 pb-2'>Lanches Recomendados</h1>
           <div className='flex px-1 gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden'>
-            {dadosLanches.map((lanche) => (
+            {produtos.map((lanche) => (
               <div
-                key={lanche.id}
-                onClick={() => navigate(`/detalhesproduto/${lanche.id}`)}
+                key={lanche._id}
+                onClick={() => navigate(`/detalhesproduto/${lanche._id}`)}
                 className="cursor-pointer"
               >
                 <CardLanche
-                  titulo={lanche.titulo}
-                  vendedor={lanche.vendedor}
-                  preco={lanche.preco}
+                  titulo={lanche.nome}
+                  vendedor={lanche.vendedor?.nome || "Desconhecido"}
+                  preco={lanche.preco.toFixed(2)}
                   imagem={lanche.imagem}
                 />
               </div>
             ))}
+
           </div>
 
           <div className='pt-4'>
