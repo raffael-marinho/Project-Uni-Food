@@ -60,14 +60,14 @@ const Pesquisar = () => {
       </div>
 
       <div
-        className="flex flex-col p-4 overflow-y-auto mb-16"
+        className="flex flex-col p-4 overflow-y-auto mb-16 "
 
       >
         {loading ? (
           <Loading />
         ) : (
           <>
-            {termo && (
+            {termo.trim() !== "" ? (
               <>
                 <h2 className="text-xl font-bold">Resultados para "{termo}"</h2>
                 <h1 className="text-lg font-bold mt-4">Vendedores</h1>
@@ -87,6 +87,11 @@ const Pesquisar = () => {
                   <p className="text-sm  mt-2">Nenhum vendedor encontrado.</p>
                 )}
               </>
+             ) : (
+              <div className="flex flex-col items-center justify-center ">
+                <h1 className="text-lg font-bold mt-12">Pesquise o que Você Deseja</h1>
+                <p className="text-sm mt-2 text-center w-9/12">Busque agora mesmo por seus lanches e vendedores</p>
+              </div>
             )}
           </>
         )}
