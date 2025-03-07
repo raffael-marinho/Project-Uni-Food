@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import capa from "@/assets/imagens/capa.jpg";
 import { CirclePlus } from "lucide-react";
 import CardProduto from "../../components/cardProduto"; // Card original
-import CardMaisVendido from "../../components/cardMaisVendido"; // Novo card para "Mais Vendidos"
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import { dadosLanches } from "@/assets/dadoscards"; // Importe os dados dos lanches
+import CardLanche from "@/components/CardLanche";
 
 const VendedorPerfil: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -82,12 +82,12 @@ const VendedorPerfil: React.FC = () => {
               key={lanche.id}
               className="min-w-[150px]" // Removido o cursor-pointer e o onClick
             >
-              <CardMaisVendido
-                nome={lanche.titulo}
-                descricao={lanche.descricao}
-                imagem={lanche.imagem}
-                valor={lanche.preco}
-              />
+          <CardLanche
+                  titulo={lanche.titulo}
+                  vendedor={lanche.vendedor}
+                  preco={lanche.preco}
+                  imagem={lanche.imagem}
+                />
             </div>
           ))}
         </div>
