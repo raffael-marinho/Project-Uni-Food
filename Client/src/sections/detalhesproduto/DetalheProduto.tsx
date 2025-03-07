@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import NavInferior from "@/components/Navinferior";
@@ -6,7 +6,6 @@ import Loading from "@/components/Loading";
 import { useNav } from "@/context/nav-context";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 import apiUrl from "@/utils/Api";
 
 interface DetailLanchesProps {
@@ -22,6 +21,11 @@ interface DetailLanchesProps {
 
 const DetalhesProduto: React.FC = () => {
   const { id } = useParams();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const tab = queryParams.get("tab");
   const { setActiveTab } = useNav();
   const [lanche, setLanche] = useState<DetailLanchesProps | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +34,11 @@ const DetalhesProduto: React.FC = () => {
   const total = quantidade * (lanche?.preco || 0);
 
   useEffect(() => {
-    setActiveTab("inicio");
+      if (tab === "pesquisar") {
+        setActiveTab("pesquisar");
+      } else {
+        setActiveTab("inicio");
+      }
     setLoading(true);
     
     fetch(`${apiUrl}/produto/${id}`)
@@ -41,7 +49,7 @@ const DetalhesProduto: React.FC = () => {
       })
       .catch((err) => console.error("Erro ao buscar produto:", err))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, pathname, setActiveTab]);
 
   const aumentarQuantidade = () => {
     if (quantidade < limiteMaximo) {
@@ -83,9 +91,12 @@ const DetalhesProduto: React.FC = () => {
     <div className="flex flex-col h-screen">
       <Navbar />
       <div className="relative">
-        <Link to="/home" className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md">
+      <button
+          onClick={() => navigate(-1)} 
+          className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md"
+        >
           <ArrowLeft className="w-6 h-6 text-white" />
-        </Link>
+        </button>
         <img src={lanche.imagem} className="h-44 w-full object-cover" alt={lanche.nome} />
       </div>
       <div className="flex flex-row items-center w-full pl-4 mt-2 justify-between">
