@@ -19,7 +19,7 @@ const Home = () => {
   const { user } = useAuth();
   const { setActiveTab } = useNav();
   const [loading, setLoading] = useState(true);
-  const [vendedores, setVendedores] = useState<any[]>([]); // Estado para armazenar vendedores da API
+  const [vendedores, setVendedores] = useState<any[]>([]); 
   const [produtos, setProdutos] = useState<any[]>([]);
   const [vendedoresExibidos, setVendedoresExibidos] = useState(3);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -42,7 +42,7 @@ const Home = () => {
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       } finally {
-        setLoading(false); // Só define falso quando ambas as chamadas terminarem
+        setLoading(false);
       }
     };
 
