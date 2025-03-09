@@ -7,13 +7,14 @@ interface CardPedidoProps {
   imagem: string;
   code: string;
   status: string;  // Alterando para somente usar o status como parâmetro
+  onClick?: () => void; 
 
 }
 
-const CardPedido: React.FC<CardPedidoProps> = ({ nome, descricao, imagem, code, status }) => {
+const CardPedido: React.FC<CardPedidoProps> = ({ nome, descricao, imagem, code, status, onClick}) => {
   return (
-    <div className="w-full h-[108px] flex-shrink-0 bg-[#FFF6E0] rounded-lg flex items-center shadow-md overflow-hidden">
-      
+    <div className="w-full h-[108px] flex-shrink-0 bg-[#FFF6E0] rounded-lg flex items-center shadow-md overflow-hidden cursor-pointer" onClick={onClick}>
+
       {/* Imagem do produto no lado esquerdo */}
       <div className="w-24 h-full flex-shrink-0">
         <img
