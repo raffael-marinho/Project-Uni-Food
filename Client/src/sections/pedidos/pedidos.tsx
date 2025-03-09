@@ -77,7 +77,7 @@ const Pedidos = () => {
             <NavBar />
             <div>
                 {loading && (
-                    <div className="flex justify-center items-center h-screen pb-64">
+                    <div className="flex justify-center items-center h-screen pb-64 ">
                         <Loading /> 
                     </div>
                 )}
@@ -87,8 +87,8 @@ const Pedidos = () => {
                     </div>
                 )}
             </div>
-            <div className="flex flex-col p-5 text-base font-semibold pb-2 mb-16">
-                <div>
+            <div className="flex flex-col p-5 text-base font-semibold pb-2">
+                <div className="flex flex-col mb-16">
                     <h1 className="text-2xl font-semibold">Meus Pedidos</h1>
                     <p className="text-xs pb-4">Aqui estão os seus pedidos</p>
                     <div className="flex flex-col gap-4 ">
