@@ -127,6 +127,11 @@ const Home = () => {
             <h1 className='text-base font-semibold pt-4 pb-2'>Vendedores</h1>
             <div className='flex flex-col gap-4'>
               {vendedores.slice(0, vendedoresExibidos).map((vendedor) => (
+                <div
+                  key={vendedor._id}
+                  onClick={() => navigate(`/detalhesvendedor/${vendedor._id}`)}
+                  className="cursor-pointer"
+                >
                 <CardVendedor
                   key={vendedor.id}
                   nome={vendedor.nome}
@@ -134,6 +139,7 @@ const Home = () => {
                   status={vendedor.status}
                   imagemPerfil={vendedor.imagemPerfil}
                 />
+                </div>
               ))}
             </div>
 
