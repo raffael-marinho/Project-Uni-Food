@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { clock, whatsapp } from '../assets/imagens';
+import { clock, ImgUser, whatsapp } from '../assets/imagens';
 
 interface CardVendedorProps {
     nome: string;
@@ -18,7 +18,7 @@ const CardVendedor: React.FC<CardVendedorProps> = ({ nome, status, telefone, ima
             <div className="w-36 h-full flex justify-center items-center">
                 <Avatar className="w-16 h-16 m-2 flex items-center justify-center">
                     <AvatarImage
-                        src={imagemPerfil || "https://ui.shadcn.com/avatars/04.png"}
+                        src={imagemPerfil || ImgUser}
                         className="rounded-full w-full h-full object-cover"
                     />
                     <AvatarFallback className="items-center text-[12px] overflow-hidden text-ellipsis whitespace-nowrap w-8/12">{nome}</AvatarFallback>
