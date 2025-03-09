@@ -123,13 +123,23 @@ const Pesquisar = () => {
                 {vendedoresFiltrados.length > 0 ? (
                   <div className="mt-4 flex flex-col gap-4">
                     {vendedoresFiltrados.map((vendedor) => (
+                    <div
+                    key={vendedor._id}
+                    onClick={() => {
+                      // Verifica se o pathname atual é 'pesquisar' ou outro valor
+                      navigate(`/detalhesvendedor/${vendedor._id}${pathname.includes("pesquisar") ? "?tab=pesquisar" : ""}`);
+                    }}
+                    className="cursor-pointer"
+                  >
                       <CardVendedor
+                      
                         key={vendedor._id}
                         nome={vendedor.nome}
                         telefone={vendedor.telefone}
                         status={vendedor.status}
                         imagemPerfil={vendedor.imagemPerfil}
                       />
+                     </div>
                     ))}
                   </div>
                 ) : (
