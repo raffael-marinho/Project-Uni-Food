@@ -3,9 +3,10 @@ interface CardLancheProps {
     vendedor: string;
     preco: string;
     imagem: string;
+    quantidade: number;
 }
 
-const CardLanche: React.FC<CardLancheProps> = ({ titulo, vendedor, preco, imagem }) => {
+const CardLanche: React.FC<CardLancheProps> = ({ titulo, vendedor, preco, imagem, quantidade }) => {
     return (
         <div>
        
@@ -19,7 +20,12 @@ const CardLanche: React.FC<CardLancheProps> = ({ titulo, vendedor, preco, imagem
             </div>
             
             <div className="w-10/12 mt-4 pb-2 border-t border-foreground">
-                <p className="text-lg font-semibold text-center"> R$ {preco}</p>
+            {quantidade > 0 ? (
+                        <p className="text-lg font-semibold text-center">R$ {preco}</p>
+                    ) : (
+                        <p className="text-lg font-semibold text-center text-primary">Esgotado</p> // Exibe "Esgotado" se a quantidade for 0
+                    )}
+        
             </div>
         </div>
         </div>

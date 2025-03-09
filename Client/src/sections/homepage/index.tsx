@@ -117,6 +117,7 @@ const Home = () => {
                   vendedor={lanche.vendedor?.nome || "Desconhecido"}
                   preco={lanche.preco.toFixed(2)}
                   imagem={lanche.imagem}
+                  quantidade={lanche.quantidade || 0}
                 />
               </div>
             ))}
