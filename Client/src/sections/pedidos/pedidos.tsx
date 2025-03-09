@@ -50,10 +50,19 @@ const Pedidos = () => {
             const fetchPedidos = async () => {
                 try {
                     const response = await axios.get(`${apiUrl}/pedidos/cliente/${user.id}`);
-                    setPedidos(response.data);
+                    
+                    if (response.data && response.data.length === 0) {
+                        setPedidos([]);
+                        setError(null);
+                    } else {
+                        setPedidos(response.data);
+                        setError(null);
+                    }
+
                     setLoading(false);
-                } catch (err) {
-                    setError("Erro ao carregar os pedidos.");
+                } catch (err: any) {
+                    setPedidos([]);
+                    setError("Você não tem pedidos");
                     setLoading(false);
                 }
             };
@@ -92,7 +101,7 @@ const Pedidos = () => {
                     <h1 className="text-2xl font-semibold">Meus Pedidos</h1>
                     <p className="text-xs pb-4">Aqui estão os seus pedidos</p>
                     <div className="flex flex-col gap-4 ">
-                        {pedidos.length === 0 && !loading ? (
+                        {pedidos.length === 0 && !loading && !error ?(
                             <p className="text-lg flex items-center">Você não tem pedidos.</p>
                         ) : (
                             pedidos
