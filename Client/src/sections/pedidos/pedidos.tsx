@@ -87,7 +87,7 @@ const Pedidos = () => {
                     </div>
                 )}
             </div>
-            <div className="flex flex-col p-5 text-base font-semibold pb-2">
+            <div className="flex flex-col p-5 text-base font-semibold pb-2 mb-16">
                 <div>
                     <h1 className="text-2xl font-semibold">Meus Pedidos</h1>
                     <p className="text-xs pb-4">Aqui estão os seus pedidos</p>
