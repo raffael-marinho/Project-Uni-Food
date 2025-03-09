@@ -16,6 +16,7 @@ import Error from '@/sections/checkout/error'
 import Checkout from '@/sections/checkout/checkout'
 import CadastroVenda from '../sections/cadastro/Cadven'
 import PedidosVendedor from '../sections/pedidosvendedor/PedidosVenda'
+import DetalheVendedor from '../sections/detalhesvendedor/DetalheVendedor'
 
 export const AppRoutes = () => {
     return (
@@ -37,6 +38,7 @@ export const AppRoutes = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/cadastrovendedor" element={<CadastroVenda />} />
             <Route path="/PedidosVendedor" element={<PedidosVendedor />} />
+            <Route path="detalhesvendedor/:id" element={<DetalheVendedor />} />
         </Routes>
     )
 }
