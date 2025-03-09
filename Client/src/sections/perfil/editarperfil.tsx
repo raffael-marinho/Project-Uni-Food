@@ -139,7 +139,7 @@ const EditarPerfil: React.FC = () => {
         ) : (
         userData && (
           <Formik
-            initialValues={{ nome: userData.nome, telefone: userData.telefone }} // Remove o prefixo no inicial
+            initialValues={{ nome: userData.nome, telefone: userData.telefone }} 
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
             enableReinitialize
