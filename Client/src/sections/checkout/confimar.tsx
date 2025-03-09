@@ -18,7 +18,7 @@ const Confimar = () => {
         const timer = setTimeout(() => {
             setIsLeaving(true);
             setTimeout(() => {
-                navigate("/checkout", { replace: true }); 
+                navigate("/pedidos", { replace: true }); 
             }, 500); 
         }, 4000);
 
