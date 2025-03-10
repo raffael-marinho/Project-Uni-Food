@@ -6,16 +6,19 @@ import { ToastProvider } from "@/components/ui/toast"; // Importe o ToastProvide
 import { Toaster } from './components/ui/toaster';
 import { AuthProvider } from './context/auth-context';
 import { NavProvider } from './context/nav-context';
+import { VendedorProvider } from './context/vendedor-auth-context';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
+    <VendedorProvider>
     <NavProvider>
     <ToastProvider> 
       <App />
       <Toaster /> 
     </ToastProvider>
     </NavProvider>
+    </VendedorProvider>
     </AuthProvider>
   </StrictMode>
 );
