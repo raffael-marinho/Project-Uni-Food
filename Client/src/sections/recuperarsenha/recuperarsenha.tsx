@@ -71,7 +71,7 @@ const ResetPassword: React.FC = () => {
       <div className="flex flex-col items-center justify-center">
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md"
+          className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md m-4"
         >
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
