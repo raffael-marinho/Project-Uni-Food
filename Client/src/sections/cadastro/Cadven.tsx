@@ -17,7 +17,7 @@ interface VendedorFormValues {
   chavePix: string;
   senha: string;
   confirmasenha: string;
-  imagem: File | null;
+  imagemPerfil: File | null;
 }
 
 const Cadven = () => {
@@ -28,27 +28,23 @@ const Cadven = () => {
   // Função para enviar os dados do formulário
   const handleSubmit = async (values: VendedorFormValues) => {
     try {
-        const formData = {
-            nome: values.nome,
-            email: values.email,
-            telefone: values.telefone,  // alterado de whatsapp para telefone
-            chavePix: values.chavePix,
-            senha: values.senha,
-            confirmasenha: values.confirmasenha,
-            imagem: file ? await convertToBase64(file) : "",
-          };
+      const formData = new FormData();
+      formData.append("nome", values.nome);
+      formData.append("email", values.email);
+      formData.append("telefone", values.telefone);
+      formData.append("chavePix", values.chavePix);
+      formData.append("senha", values.senha);
+      formData.append("confirmasenha", values.confirmasenha);
+      if (file) {
+        formData.append("imagemPerfil", file); // Anexa o arquivo de imagem
+      }
 
-      // Envia os dados do formulário para o backend          
-
-      await axios.post(
-        `${apiUrl}/auth/register/vendedor`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      // Envia os dados do formulário para o backend
+      await axios.post(`${apiUrl}/auth/register/vendedor`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast({
         title: "Cadastro realizado com sucesso!",
@@ -71,16 +67,6 @@ const Cadven = () => {
     }
   };
 
-  // Função para converter a imagem para base64
-  const convertToBase64 = (file: File) => {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
   return (
     <div className="flex flex-col items-center h-screen">
       <div className="flex items-center h-72 gap-4">
@@ -95,7 +81,7 @@ const Cadven = () => {
           chavePix: "",
           senha: "",
           confirmasenha: "",
-          imagem: null,
+          imagemPerfil: null,
         }}
         validationSchema={Yup.object({
           nome: Yup.string().required("Nome da loja é obrigatório"),
@@ -136,19 +122,17 @@ const Cadven = () => {
               <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
             </div>
 
-            {/* Whatsapp */}
-           {/* Telefone */}
-<div className="relative">
-  <MessageCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#CE9E7E]" />
-  <Field
-    name="telefone"
-    type="text"
-    placeholder="Telefone"
-    className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E]"
-  />
-  <ErrorMessage name="telefone" component="div" className="text-red-500 text-sm" />
-</div>
-
+            {/* Telefone */}
+            <div className="relative">
+              <MessageCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#CE9E7E]" />
+              <Field
+                name="telefone"
+                type="text"
+                placeholder="Telefone"
+                className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E]"
+              />
+              <ErrorMessage name="telefone" component="div" className="text-red-500 text-sm" />
+            </div>
 
             {/* Chave Pix */}
             <div className="relative">
@@ -183,7 +167,7 @@ const Cadven = () => {
                 placeholder="Confirmação da Senha"
                 className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E]"
               />
-              <ErrorMessage name="senhaConfirm" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage name="confirmasenha" component="div" className="text-red-500 text-sm" />
             </div>
 
             {/* Upload de Imagem */}
