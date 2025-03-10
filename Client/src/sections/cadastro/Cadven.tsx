@@ -1,5 +1,5 @@
 import { uni } from "@/assets/imagens";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { User, Mail, KeyRound, EyeOff, Eye, ArrowLeft, Plus } from "lucide-react";
@@ -296,7 +296,7 @@ const Cadven = () => {
                         />
                         <button
                           type="button"
-                          onClick={() => setImage(null)} // Remove o preview
+                          onClick={() => setImage(null)}
                           className="absolute top-0 right-0 p-2 bg-primary text-white rounded-full w-10 h-10"
                         >
                           X
