@@ -33,8 +33,34 @@ const Cadven = () => {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null; // Verifica se há arquivos selecionados
     if (selectedFile) {
-      setFile(selectedFile);   // Atualiza o estado do arquivo
-      setImage(selectedFile);  // Atualiza a imagem para o preview
+      // Verifica o tipo de imagem
+      const isValidImageType = selectedFile.type === "image/jpeg" || selectedFile.type === "image/png";
+      
+      // Verifica o tamanho do arquivo (máximo 5MB)
+      const isValidSize = selectedFile.size <= 5 * 1024 * 1024; // 5MB em bytes
+  
+      if (!isValidImageType) {
+        toast({
+          title: "Erro no formato da imagem",
+          description: "Somente arquivos JPG ou PNG são permitidos.",
+          variant: "destructive",
+          duration: 2000,
+        });
+        return; // Impede a seleção de imagem inválida
+      }
+  
+      if (!isValidSize) {
+        toast({
+          title: "Erro no tamanho da imagem",
+          description: "A imagem não pode exceder 5MB.",
+          variant: "destructive",
+          duration: 2000,
+        });
+        return; // Impede a seleção de imagem muito grande
+      }
+  
+      setFile(selectedFile); // Atualiza o estado do arquivo
+      setImage(selectedFile); // Atualiza a imagem para o preview
     }
   };
 
