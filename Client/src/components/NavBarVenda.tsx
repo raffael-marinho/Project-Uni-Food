@@ -10,12 +10,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useVendedor } from "@/context/vendedor-auth-context";
 
 const NavBarVenda: React.FC = () => {
+  const { logout } = useVendedor();
+  const handleLogout = () => {
+    logout(); // Chama a função de logout
+    window.location.href = "/login"; // Redireciona o usuário para a página de login
+  };
   return (
     <nav className="bg-background sticky left-0 top-0 w-full shadow-md z-50 pt-5">
       <div className="container mx-auto flex justify-between items-center py-3 px-4">
-        <SheetDemo />
+        <SheetDemo handleLogout={handleLogout} />
         <div className="flex-1 flex justify-center">
           <img src={LogoMobile} alt="Logo" className="h-12 w-12" />
         </div>
@@ -30,7 +36,11 @@ const NavBarVenda: React.FC = () => {
   );
 };
 
-const SheetDemo: React.FC = () => {
+
+  interface SheetDemoProps {
+    handleLogout: () => void; // Definindo a tipagem da prop
+  }
+  const SheetDemo: React.FC<SheetDemoProps> = ({ handleLogout }) => {
   const navigate = useNavigate();
 
   return (
@@ -44,7 +54,15 @@ const SheetDemo: React.FC = () => {
         <SheetHeader>
           <SheetTitle className="text-foreground ">Menu</SheetTitle>
         </SheetHeader>
+ 
         <div className="mt-8 space-y-4">
+        <Button
+            variant="ghost"
+            className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
+            onClick={() => navigate("/homevendedor")}
+          >
+            Inicio
+          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
@@ -61,6 +79,7 @@ const SheetDemo: React.FC = () => {
           <Button
             variant="outline"
             className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
+            onClick={handleLogout}
           >
             Sair
           </Button>
