@@ -6,6 +6,7 @@ import apiUrl from "@/utils/Api";
 import { Button } from "@/components/ui/button";
 import { XCircle } from "lucide-react";
 import Loading from "@/components/Loading";
+import { toast } from "@/hooks/use-toast";
 
 const PedidosVendedor = () => {
   const { vendedor, token } = useVendedor();
@@ -66,7 +67,13 @@ const PedidosVendedor = () => {
       }
 
       const data = await response.json();
-      alert(data.message); // Exibe mensagem de sucesso
+      toast ({
+        title: "Pedido Finalizado",
+        description: data.message,
+        variant: "default",
+        duration: 800,
+        className:"translate-y-7",
+      })
 
       // Chama a função fetchPedidos para recarregar a lista de pedidos
       fetchPedidos();
@@ -77,7 +84,13 @@ const PedidosVendedor = () => {
 
     } catch (error) {
       console.error(error);
-      alert("Erro ao atualizar o status do pedido");
+      toast ({
+        title: "Erro ao atualizar o status do pedido",
+        description: "Ocorreu um erro ao atualizar o status do pedido.",
+        variant: "destructive",
+        duration: 800,
+        className:"translate-y-7",
+      })
     }
   };
   const handleCancelarPedido = async () => {
@@ -97,7 +110,13 @@ const PedidosVendedor = () => {
       }
 
       const data = await response.json();
-      alert(data.message); // Exibe mensagem de sucesso
+      toast ({
+        title: "Pedido cancelado",
+        description: data.message,
+        variant: "default",
+        duration: 800,
+        className:"translate-y-7",
+      })
 
       // Chama a função fetchPedidos para recarregar a lista de pedidos
       fetchPedidos();
@@ -108,7 +127,14 @@ const PedidosVendedor = () => {
 
     } catch (error) {
       console.error(error);
-      alert("Erro ao cancelar o pedido");
+      toast({
+        title: "Erro ao cancelar o pedido",
+        description: "Ocorreu um erro ao cancelar o pedido.",
+        variant: "destructive",
+        duration: 800,
+        className:"translate-y-7",
+        
+      })
     }
   };
 
