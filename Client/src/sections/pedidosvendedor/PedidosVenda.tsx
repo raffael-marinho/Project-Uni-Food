@@ -67,12 +67,12 @@ const PedidosVendedor = () => {
       }
 
       const data = await response.json();
-      toast ({
+      toast({
         title: "Pedido Finalizado",
         description: data.message,
         variant: "default",
         duration: 800,
-        className:"translate-y-7",
+        className: "translate-y-7",
       })
 
       // Chama a função fetchPedidos para recarregar a lista de pedidos
@@ -84,12 +84,12 @@ const PedidosVendedor = () => {
 
     } catch (error) {
       console.error(error);
-      toast ({
+      toast({
         title: "Erro ao atualizar o status do pedido",
         description: "Ocorreu um erro ao atualizar o status do pedido.",
         variant: "destructive",
         duration: 800,
-        className:"translate-y-7",
+        className: "translate-y-7",
       })
     }
   };
@@ -110,12 +110,12 @@ const PedidosVendedor = () => {
       }
 
       const data = await response.json();
-      toast ({
+      toast({
         title: "Pedido cancelado",
         description: data.message,
         variant: "default",
         duration: 800,
-        className:"translate-y-7",
+        className: "translate-y-7",
       })
 
       // Chama a função fetchPedidos para recarregar a lista de pedidos
@@ -132,8 +132,8 @@ const PedidosVendedor = () => {
         description: "Ocorreu um erro ao cancelar o pedido.",
         variant: "destructive",
         duration: 800,
-        className:"translate-y-7",
-        
+        className: "translate-y-7",
+
       })
     }
   };
@@ -144,47 +144,58 @@ const PedidosVendedor = () => {
   return (
     <div className="flex flex-col h-screen">
       <NavBarVenda />
-      
+
       <div className="flex flex-col p-5 text-base font-semibold pb-2">
-      {loading && (
-        <div className="flex justify-center items-center h-screen">
-          <Loading />
-        </div>
-       )}
+        {loading && (
+          <div className="flex justify-center items-center h-screen">
+            <Loading />
+          </div>
+        )}
         <h1 className="text-2xl mb-8 font-semibold">Aqui estão os seus pedidos</h1>
         <div className="flex flex-col gap-4">
           {pedidos.length > 0 ? (
-            pedidos.map((pedido) => (
-              <CardPedidoVendas
-                key={pedido._id}
-                nome={pedido.cliente.nome}
-                codigoPedido={pedido.codigoPedido}
-                status={pedido.status}
-                produtos={pedido.produtos.map((p: any) => ({
-                  nome: p.produto.nome,
+            pedidos.map((pedido) => {
+              // Filtrando os produtos inválidos (nulos ou indefinidos)
+              const produtosValidos = pedido.produtos
+                .filter((p: any) => p.produto) // Remove produtos inválidos
+                .map((p: any) => ({
+                  nome: p.produto?.nome ?? "Produto indisponível",
                   preco: p.precoUnitario * p.quantidade,
-                }))}
-                total={pedido.produtos.reduce(
-                  (acc: number, p: any) => acc + p.precoUnitario * p.quantidade,
-                  0
-                )}
-                onOpen={() => handlePedidoClick(pedido)} // Abre o modal
-                onClose={handleCloseModal}
-                onClick={() => handlePedidoClick(pedido)} // Fecha o modal
-              />
-            ))
+                }));
+
+              return (
+                <CardPedidoVendas
+                  key={pedido._id}
+                  nome={pedido.cliente.nome}
+                  codigoPedido={pedido.codigoPedido}
+                  status={pedido.status}
+                  produtos={produtosValidos} // Passando apenas produtos válidos
+                  total={produtosValidos.reduce(
+                    (acc: number, p: any) => acc + p.preco,
+                    0
+                  )}
+                  onOpen={() => handlePedidoClick(pedido)} // Abre o modal
+                  onClose={handleCloseModal}
+                  onClick={() => handlePedidoClick(pedido)} // Fecha o modal
+                />
+              );
+            })
           ) : (
             <p>Nenhum pedido encontrado.</p>
           )}
+
         </div>
       </div>
 
       {/* Modal */}
+      {/* Modal */}
       {modalAberto && pedidoSelecionado && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5">
           <div className="bg-[#FFF6E0] p-6 rounded-lg max-w-lg w-full">
-            <button onClick={handleCloseModal} className="relative top-0 left-60  text-primary w-8 h-8 flex justify-center items-center rounded-full"><XCircle /></button>
-            <h2 className="text-xl font-semibold mb-4 text-center ">Detalhes do Pedido</h2>
+            <button onClick={handleCloseModal} className="relative top-0 left-60 text-primary w-8 h-8 flex justify-center items-center rounded-full">
+              <XCircle />
+            </button>
+            <h2 className="text-xl font-semibold mb-4 text-center">Detalhes do Pedido</h2>
             <div className="mb-4 flex flex-col justify-center">
               <p><strong>Código do Pedido:</strong> {pedidoSelecionado.codigoPedido}</p>
               <p><strong>Cliente:</strong> {pedidoSelecionado.cliente.nome}</p>
@@ -193,23 +204,38 @@ const PedidosVendedor = () => {
               <p><strong>Hora do Pedido:</strong> {new Date(pedidoSelecionado.dataPedido).toLocaleTimeString()}</p>
               <h3 className="font-semibold mt-4">Produtos:</h3>
               <ul>
-                {pedidoSelecionado.produtos.map((p: any) => (
-                  <li key={p.produto._id}>
-                    {p.produto.nome} - {p.quantidade} x R$ {p.precoUnitario} = R$ {p.precoUnitario * p.quantidade}
-                  </li>
-                ))}
+                {/* Filtra produtos nulos ou inválidos antes de renderizar */}
+                {pedidoSelecionado.produtos.filter((p: any) => p.produto).length > 0 ? (
+                  pedidoSelecionado.produtos
+                    .filter((p: any) => p.produto) // Remove produtos inválidos
+                    .map((p: any) => (
+                      <li key={p.produto._id}>
+                        {p.produto.nome} - {p.quantidade} x R$ {p.precoUnitario} = R$ {p.precoUnitario * p.quantidade}
+                      </li>
+                    ))
+                ) : (
+                  <p>Sem produtos válidos no pedido.</p>
+                )}
               </ul>
               <p className="font-semibold mt-4">
-                <strong>Total:</strong> R$ {pedidoSelecionado.produtos.reduce((acc: number, p: any) => acc + p.precoUnitario * p.quantidade, 0)}
+                <strong>Total:</strong> R$ {pedidoSelecionado.produtos
+                  .filter((p: any) => p.produto) // Considera apenas produtos válidos
+                  .reduce((acc: number, p: any) => acc + p.precoUnitario * p.quantidade, 0)}
               </p>
             </div>
-            <div className="flex justify-center gap-2">
-              <Button onClick={() => handleAtualizarStatusPedido('Finalizado')} variant={"default"}>Finalizar Pedido</Button>
-              <Button onClick={() => handleCancelarPedido()} variant={"outline"}>Cancelar Pedido</Button>
-            </div>
+
+            {/* Verificando se o pedido tem produtos válidos para mostrar os botões */}
+            {pedidoSelecionado.produtos.filter((p: any) => p.produto).length > 0 && (
+              <div className="flex justify-center gap-2">
+                <Button onClick={() => handleAtualizarStatusPedido('Finalizado')} variant={"default"}>Finalizar Pedido</Button>
+                <Button onClick={() => handleCancelarPedido()} variant={"outline"}>Cancelar Pedido</Button>
+              </div>
+            )}
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

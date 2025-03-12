@@ -9,6 +9,7 @@ import apiUrl from "@/utils/Api";
 import Loading from "@/components/Loading";
 import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ItemIndis } from "@/assets/imagens";
 
 interface Produto {
     nome: string;
@@ -33,7 +34,7 @@ interface Pedido {
 
 const Pedidos = () => {
     const { setActiveTab } = useNav();
-    const { user } = useAuth();  
+    const { user } = useAuth();
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -46,11 +47,11 @@ const Pedidos = () => {
     }, [setActiveTab]);
 
     useEffect(() => {
-        if (user && user.id) {  
+        if (user && user.id) {
             const fetchPedidos = async () => {
                 try {
                     const response = await axios.get(`${apiUrl}/pedidos/cliente/${user.id}`);
-                    
+
                     if (response.data && response.data.length === 0) {
                         setPedidos([]);
                         setError(null);
@@ -87,7 +88,7 @@ const Pedidos = () => {
             <div>
                 {loading && (
                     <div className="flex justify-center items-center h-screen pb-64 ">
-                        <Loading /> 
+                        <Loading />
                     </div>
                 )}
                 {error && !loading && (
@@ -101,27 +102,27 @@ const Pedidos = () => {
                     <h1 className="text-2xl font-semibold">Meus Pedidos</h1>
                     <p className="text-xs pb-4">Aqui estão os seus pedidos</p>
                     <div className="flex flex-col gap-4 ">
-                        {pedidos.length === 0 && !loading && !error ?(
+                        {pedidos.length === 0 && !loading && !error ? (
                             <p className="text-lg flex items-center">Você não tem pedidos.</p>
                         ) : (
                             pedidos
-                                .slice() 
-                                .sort((a, b) => new Date(b.dataPedido).getTime() - new Date(a.dataPedido).getTime()) // Ordena do mais recente para o mais antigo
+                                .slice()
+                                .sort((a, b) => new Date(b.dataPedido).getTime() - new Date(a.dataPedido).getTime())
                                 .map((pedido, index) => (
                                     pedido.produtos && pedido.produtos.length > 0 ? (
                                         pedido.produtos.map((produto, produtoIndex) => (
                                             <CardPedido
                                                 key={`${index}-${produtoIndex}`}
-                                                nome={produto.produto.nome}
-                                                imagem={produto.produto.imagem}
-                                                descricao={produto.produto.descricao}
+                                                nome={produto?.produto?.nome ?? "Produto indisponível"}
+                                                imagem={produto?.produto?.imagem ?? ItemIndis}
+                                                descricao={produto?.produto?.descricao ?? "Descrição não disponível"}
                                                 code={pedido.codigoPedido}
                                                 status={pedido.status}
                                                 onClick={() => void openModal(pedido)}
                                             />
                                         ))
                                     ) : (
-                                        <p>Este pedido não contém produtos.</p>
+                                        <p key={index}>Este pedido não contém produtos.</p>
                                     )
                                 ))
                         )}
@@ -143,42 +144,46 @@ const Pedidos = () => {
                                 <h2 className="text-xl font-semibold mb-4">Código {selectedPedido.codigoPedido}</h2>
                                 <p className="text-sm text-primary mb-4">Status: {selectedPedido.status}</p>
 
+
                                 <h3 className="font-semibold mb-2">Produtos:</h3>
                                 <ul>
                                     {selectedPedido.produtos.map((produto, index) => (
                                         <li key={index} className="mb-2">
                                             <img
-                                                src={produto.produto.imagem}
-                                                alt={produto.produto.nome}
+                                                src={produto?.produto?.imagem ?? ItemIndis} // Imagem padrão
+                                                alt={produto?.produto?.nome ?? "Produto indisponível"}
                                                 className="w-16 h-16 rounded-md mr-2 inline-block"
                                             />
                                             <div className="inline-block align-middle">
-                                                <p className="font-semibold">{produto.produto.nome}</p>
-                                                <p className="text-sm">Quantidade: {produto.quantidade}</p>
-                                                <p className="text-sm">Preço: R$ {produto.precoUnitario}</p>
-                                                <p className="text-sm pb-2">Total: R$ {produto.precoUnitario * produto.quantidade}</p>
-                                            
-                                                {selectedPedido.status !== "Finalizado" && selectedPedido.status !== "Cancelado" ? (
-                                                    <p className="text-sm text-ellipsis overflow-hidden whitespace-nowrap w-44">
-                                                        Chave Pix: {selectedPedido.chavePix}
-                                                    </p>
+                                                <p className="font-semibold">{produto?.produto?.nome ?? "Produto indisponível"}</p>
+                                                {produto?.produto ? (
+                                                    <>
+                                                        <p className="text-sm">Quantidade: {produto.quantidade}</p>
+                                                        <p className="text-sm">Preço: R$ {produto.precoUnitario}</p>
+                                                        <p className="text-sm pb-2">Total: R$ {produto.precoUnitario * produto.quantidade}</p>
+                                                    </>
                                                 ) : (
-                                                    <p className="text-sm text-primary">
-                                                        {selectedPedido.status === "Finalizado" ? "Produto Pago" : "Produto Cancelado"}
-                                                    </p>
+                                                    <p className="text-sm text-primary">Produto removido</p>
                                                 )}
-
                                             </div>
                                         </li>
                                     ))}
                                 </ul>
+
+
                                 {selectedPedido.status !== "Finalizado" && selectedPedido.status !== "Cancelado" && (
-                                    <Button
-                                        onClick={() => navigator.clipboard.writeText(selectedPedido.chavePix)}
-                                        className="mt-4 w-full p-2 rounded-lg"
-                                    >
-                                        Copiar Chave Pix
-                                    </Button>
+                                    <div>
+                                        <p className="text-sm text-ellipsis overflow-hidden whitespace-nowrap w-44">
+                                            Chave Pix: {selectedPedido.chavePix}
+                                        </p>
+                                        <Button
+                                            onClick={() => navigator.clipboard.writeText(selectedPedido.chavePix)}
+                                            className="mt-4 w-full p-2 rounded-lg"
+                                        >
+                                            Copiar Chave Pix
+                                        </Button>
+                                    </div>
+
                                 )}
                             </div>
                         </div>
