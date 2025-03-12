@@ -21,6 +21,8 @@ import RecuperarSenha from '@/sections/recuperarsenha/recuperarsenha'
 import AdicionarProduto from '@/sections/adicionarproduto/adicionarproduto'
 import PerfilVendedor from '@/sections/perfilvendedor/perfil'
 import EditarProduto from '@/sections/editarproduto/editarproduto'
+import ProdutoVendedor from '@/sections/detalhesprodutodovendedor/detalhesdoprodutvenda'
+import EditarPerfilVendedor from '@/sections/perfilvendedor/editarperfilvenda'
 
 export const AppRoutes = () => {
     return (
@@ -35,7 +37,7 @@ export const AppRoutes = () => {
             <Route path="/pedidos" element={<Pedidos />} />
             <Route path="/pesquisar" element={<Pesquisar />} />
             <Route path="/editarperfil/:id" element={<EditarPerfil />} />
-            <Route path="detalhesproduto/:id" element={<DetalhesProduto />} />
+            <Route path="/detalhesproduto/:id" element={<DetalhesProduto />} />
             <Route path="/homevendedor" element={<Homevendedor />} />
             <Route path="/confirmarpedido" element={<Confirmar/>} />
             <Route path="/erropedido" element={<Error />} />
@@ -47,6 +49,8 @@ export const AppRoutes = () => {
             <Route path="/adicionarproduto" element={<AdicionarProduto />} />
             <Route path="/perfilvendedor/:id" element={<PerfilVendedor />} />
             <Route path="/editarproduto/:id" element={<EditarProduto />} />
+            <Route path="/produtovendedor/:id" element={<ProdutoVendedor />} />
+            <Route path="/editarperfilvendedor/:id" element={<EditarPerfilVendedor />} />
         </Routes>
     )
 }
