@@ -172,7 +172,7 @@ const AdicionarProduto = () => {
                                 <label htmlFor="ingredientes" className="text-foreground font-semibold">Ingredientes</label>
                                 <Field as="textarea" name="ingredientes" placeholder="Ingredientes do produto"
                                     className="border-2 border-[#CE9E7E] p-2 rounded-sm w-[300px] h-20 bg-transparent placeholder-[#CE9E7E] text-foreground focus:border-foreground focus:outline-none resize-none" />
-                                <ErrorMessage name="ingredientes" component="p" className="text-red-500" />
+                                <ErrorMessage name="ingredientes" component="p" className="text-primary" />
                             </div>
 
                             {/* Descrição */}
