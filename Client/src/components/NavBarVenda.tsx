@@ -37,10 +37,10 @@ const NavBarVenda: React.FC = () => {
 };
 
 
-  interface SheetDemoProps {
-    handleLogout: () => void; // Definindo a tipagem da prop
-  }
-  const SheetDemo: React.FC<SheetDemoProps> = ({ handleLogout }) => {
+interface SheetDemoProps {
+  handleLogout: () => void; // Definindo a tipagem da prop
+}
+const SheetDemo: React.FC<SheetDemoProps> = ({ handleLogout }) => {
   const navigate = useNavigate();
 
   return (
@@ -54,9 +54,9 @@ const NavBarVenda: React.FC = () => {
         <SheetHeader>
           <SheetTitle className="text-foreground ">Menu</SheetTitle>
         </SheetHeader>
- 
+
         <div className="mt-8 space-y-4">
-        <Button
+          <Button
             variant="ghost"
             className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
             onClick={() => navigate("/homevendedor")}
@@ -66,14 +66,15 @@ const NavBarVenda: React.FC = () => {
           <Button
             variant="ghost"
             className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
+            onClick={() => navigate("/perfilvendedor/:id")}
           >
             Editor Perfil
           </Button>
           <Button
-  variant="ghost"
-  className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
-  onClick={() => navigate("/PedidosVendedor")}
->
+            variant="ghost"
+            className="w-full justify-start text-left hover:bg-[#FAAB35] hover:text-white"
+            onClick={() => navigate("/PedidosVendedor")}
+          >
             Pedidos
           </Button>
           <Button
