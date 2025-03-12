@@ -18,6 +18,9 @@ import PedidosVendedor from '../sections/pedidosvendedor/PedidosVenda'
 import DetalheVendedor from '../sections/detalhesvendedor/DetalheVendedor'
 import CadastroCli from '../sections/cadastro/Cadcli'
 import RecuperarSenha from '@/sections/recuperarsenha/recuperarsenha'
+import AdicionarProduto from '@/sections/adicionarproduto/adicionarproduto'
+import PerfilVendedor from '@/sections/perfilvendedor/perfil'
+import EditarProduto from '@/sections/editarproduto/editarproduto'
 
 export const AppRoutes = () => {
     return (
@@ -41,6 +44,9 @@ export const AppRoutes = () => {
             <Route path="/detalhesvendedor/:id" element={<DetalheVendedor />} />
             <Route path="/cadastrocliente" element={<CadastroCli />} />
             <Route path="/recuperarsenha" element={<RecuperarSenha />} />
+            <Route path="/adicionarproduto" element={<AdicionarProduto />} />
+            <Route path="/perfilvendedor/:id" element={<PerfilVendedor />} />
+            <Route path="/editarproduto/:id" element={<EditarProduto />} />
         </Routes>
     )
 }
