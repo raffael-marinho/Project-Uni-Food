@@ -15,6 +15,7 @@ import clock from "../assets/imagens/clock.svg";
 import Divisão from "../assets/imagens/DivisãoReserva.svg";
 import ImgUser from '../assets/imagens/User.png'; 
 import capa from "../assets/imagens/capa.jpg"; 
+import ItemIndis from "../assets/imagens/itemindisponivel.svg"
 
 export { 
   uni,
@@ -33,5 +34,6 @@ export {
   clock,
   Divisão,
   ImgUser,
-  capa
+  capa,
+  ItemIndis
 }
