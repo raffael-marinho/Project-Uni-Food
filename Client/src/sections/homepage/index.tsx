@@ -10,42 +10,63 @@ import "swiper/swiper-bundle.css";
 import { useAuth } from '@/context/auth-context';
 import CardLanche from '@/components/CardLanche';
 import CardVendedor from '@/components/CardVendedor';
-import { dadosLanches } from '@/assets/dadoscards';
-import { dadosVendedor } from '@/assets/dadosvendedor';
 import Loading from '@/components/Loading';
 import { useNavigate } from 'react-router-dom';
+import apiUrl from '@/utils/Api';
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { setActiveTab } = useNav();
   const [loading, setLoading] = useState(true);
-  const [vendedoresExibidos, setVendedoresExibidos] = useState(3); 
-  const [loadingMore, setLoadingMore] = useState(false); 
+  const [vendedores, setVendedores] = useState<any[]>([]); 
+  const [produtos, setProdutos] = useState<any[]>([]);
+  const [vendedoresExibidos, setVendedoresExibidos] = useState(3);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     setActiveTab("inicio");
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+
+    const fetchData = async () => {
+      try {
+        const [vendedoresRes, produtosRes] = await Promise.all([
+          fetch(`${apiUrl}/vendedor`),
+          fetch(`${apiUrl}/produto`)
+        ]);
+
+        const vendedoresData = await vendedoresRes.json();
+        const produtosData = await produtosRes.json();
+
+        setVendedores(vendedoresData);
+        setProdutos(produtosData);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
+
 
   // Função para carregar mais vendedores
   const carregarMaisVendedores = () => {
-    if (loadingMore || vendedoresExibidos >= dadosVendedor.length) return;
+    if (loadingMore || vendedoresExibidos >= vendedores.length) return;
     setLoadingMore(true);
     setTimeout(() => {
-      setVendedoresExibidos(prevState => prevState + 3); 
+      setVendedoresExibidos(prevState => prevState + 3);
       setLoadingMore(false);
-    }, 1000); 
+    }, 1000);
   };
 
- const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-  const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-  if (scrollTop + clientHeight >= scrollHeight - 10) {
-    carregarMaisVendedores();
-  }
-};
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      carregarMaisVendedores();
+    }
+  };
 
   return (
     <div className='flex flex-col h-screen'>
@@ -85,33 +106,41 @@ const Home = () => {
         <div>
           <h1 className='text-base font-semibold pt-4 pb-2'>Lanches Recomendados</h1>
           <div className='flex px-1 gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden'>
-          {dadosLanches.map((lanche) => (
-          <div
-            key={lanche.id}
-            onClick={() => navigate(`/detalhesproduto/${lanche.id}`)} // Ação de clique
-            className="cursor-pointer" // Adiciona cursor de clique para indicar interatividade
-          >
-            <CardLanche
-              titulo={lanche.titulo}
-              vendedor={lanche.vendedor}
-              preco={lanche.preco}
-              imagem={lanche.imagem}
-            />
-          </div>
-        ))}
+            {produtos.map((lanche) => (
+              <div
+                key={lanche._id}
+                onClick={() => navigate(`/detalhesproduto/${lanche._id}`)}
+                className="cursor-pointer"
+              >
+                <CardLanche
+                  titulo={lanche.nome}
+                  vendedor={lanche.vendedor?.nome || "Desconhecido"}
+                  preco={lanche.preco.toFixed(2)}
+                  imagem={lanche.imagem}
+                  quantidade={lanche.quantidade || 0}
+                />
+              </div>
+            ))}
+
           </div>
 
           <div className='pt-4'>
             <h1 className='text-base font-semibold pt-4 pb-2'>Vendedores</h1>
             <div className='flex flex-col gap-4'>
-              {dadosVendedor.slice(0, vendedoresExibidos).map((vendedor) => (
+              {vendedores.slice(0, vendedoresExibidos).map((vendedor) => (
+                <div
+                  key={vendedor._id}
+                  onClick={() => navigate(`/detalhesvendedor/${vendedor._id}`)}
+                  className="cursor-pointer"
+                >
                 <CardVendedor
                   key={vendedor.id}
                   nome={vendedor.nome}
                   telefone={vendedor.telefone}
                   status={vendedor.status}
-                  imagem={vendedor.imagem}
+                  imagemPerfil={vendedor.imagemPerfil}
                 />
+                </div>
               ))}
             </div>
 

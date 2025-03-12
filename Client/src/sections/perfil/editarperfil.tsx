@@ -1,98 +1,188 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/auth-context"; 
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useToast } from "@/hooks/use-toast";
+import apiUrl from "@/utils/Api";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Loading from "@/components/Loading";
 
 interface User {
   id: string;
   nome: string;
-  email: string;
+  telefone: string;
 }
 
 const EditarPerfil: React.FC = () => {
   const { id } = useParams<{ id: string }>(); 
-  const { user, updateUser } = useAuth();
+  const { user, updateUser} = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [userData, setUserData] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { token } = useAuth();
 
   const validationSchema = Yup.object({
     nome: Yup.string()
       .min(3, "O nome deve ter pelo menos 3 caracteres")
       .max(50, "O nome não pode ter mais de 50 caracteres")
-      .required("O nome é obrigatório"),
+      .required("O nome é obrigatório"), 
   });
 
-  // Função assíncrona para buscar dados do usuário
-  const fetchUserData = async (): Promise<string> => {
-    try {
-      const { data } = await axios.get<User>(`http://localhost:3000/cliente/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-
-      return data.nome; 
-    } catch (error) {
-      console.error("Erro ao carregar usuário:", error);
-      toast({"title": "Erro ao carregar usuário",
-            "description": "Ocorreu um erro ao carregar os dados do usuário.",
-             "variant": "destructive",
-             "duration": 5000});
-      return "";
-    }
-  };
-
   useEffect(() => {
-    fetchUserData();
-  }, [id]);
-
-  const handleSubmit = async (values: { nome: string }) => {
-    try {
-      await axios.put(
-        `http://localhost:3000/cliente/${id}`,
-        { nome: values.nome },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-      );
-
-      toast({"title": "Perfil atualizado",
-            "description": "Seu perfil foi atualizado com sucesso.",
-             "variant": "default",
-             "duration": 5000});
-
-      // Atualiza o contexto de autenticação
-      if (user) {
-        updateUser({ ...user, nome: values.nome });
+    if (!token || !id) {
+      console.warn("Token ou ID do usuário ainda não carregado, esperando...");
+      return;
+    }
+  
+    const fetchUserData = async () => {
+      try {
+        const { data } = await axios.get<User>(`${apiUrl}/cliente/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+        setUserData(data);
+      } catch (error) {
+        console.error("Erro ao carregar usuário:", error);
+        toast({
+          title: "Erro ao carregar perfil",
+          description: "Ocorreu um erro ao buscar os dados do usuário.",
+          variant: "destructive",
+          className: "translate-y-7",
+        });
+      } finally {
+        setLoading(false);
       }
+    };
+  
+    fetchUserData();
+  }, [token, id]);
 
-      navigate(`/perfil/${id}`); 
+  const handleSubmit = async (values: { nome: string; telefone: string }) => {
+    try {
+      const updatedFields: any = {};
+
+      if (values.nome !== userData?.nome) {
+        updatedFields.nome = values.nome;
+      }
+  
+       if (values.telefone && values.telefone !== userData?.telefone) {
+ 
+        updatedFields.telefone = `+5581${values.telefone.replace(/[^0-9]/g, "")}`;
+      } else if (!values.telefone) {
+        updatedFields.telefone = null; 
+      }
+  
+      if (Object.keys(updatedFields).length === 0) {
+        toast({
+          title: "Nenhuma alteração",
+          description: "Não há alterações para salvar.",
+          variant: "default",
+          duration: 2000,
+          className: "translate-y-7",
+        });
+        return;
+      }
+  
+      await axios.put(
+        `${apiUrl}/cliente/${id}`,
+        updatedFields,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      toast({
+        title: "Perfil atualizado",
+        description: "Seu perfil foi atualizado com sucesso.",
+        variant: "default",
+        duration: 2000,
+        className: "translate-y-7",
+      });
+  
+  
+      if (user) {
+        updateUser({ ...user, ...updatedFields });
+      }
+  
+      navigate(`/perfil/${id}`);
     } catch (error) {
       console.error("Erro ao atualizar o perfil:", error);
-      alert("Erro ao atualizar o perfil.");
+      toast({
+        title: "Erro ao atualizar perfil",
+        description: "Ocorreu um erro ao tentar atualizar seus dados.",
+        variant: "destructive",
+        duration: 2000,
+        className: "translate-y-7",
+      });
     }
+    
   };
-
+  
+  
   return (
-    <div>
-      <h1>Editar Perfil</h1>
-      <Formik
-        initialValues={{ nome: user?.nome || "" }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-        enableReinitialize
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <label htmlFor="nome">Nome:</label>
-            <Field id="nome" name="nome" />
-            <ErrorMessage name="nome" component="div" className="error" />
+    <div className="flex flex-col h-screen">
+      
+      <div className="flex p-6">
+        <Link to={`/perfil/${id}`} className="bg-primary p-2 rounded-full shadow-md">
+          <ArrowLeft className="w-6 h-6 text-white" />
+        </Link>
+        
+      </div>
+      
 
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Salvando..." : "Salvar"}
-            </button>
-          </Form>
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold mb-5">Editar Perfil</h1>
+        {loading ? (
+          <Loading /> 
+        ) : (
+        userData && (
+          <Formik
+            initialValues={{ nome: userData.nome, telefone: userData.telefone }} 
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            enableReinitialize
+          >
+            {({ isSubmitting, setFieldValue }) => (
+              <Form className="flex flex-col">
+                <label htmlFor="nome" className="block mb-2 font-semibold">Nome</label>
+                <Field id="nome" name="nome"
+                  className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E]
+                  text-foreground focus:border-foreground focus:outline-none focus:text-foreground mb-6"
+                />
+                <ErrorMessage name="nome" component="div" className="text-red-500 text-sm" />
+
+                <label htmlFor="telefone" className="block mb-2 font-semibold">Whatsapp</label>
+                <div className="flex items-center border-2 border-[#CE9E7E] p-2 rounded-sm w-[300px] bg-transparent text-foreground focus-within:border-foreground focus-within:outline-none">
+                  <span className="text-primary">+55 81</span>
+                  <Field
+                    id="telefone"
+                    name="telefone"
+                    type="tel"
+                    placeholder="999999999"
+                    maxLength={9}
+                    className="ml-2 flex-1 bg-transparent outline-none placeholder-[#CE9E7E] text-foreground"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      let telefone = e.target.value.replace(/[^0-9]/g, "");
+                      if (telefone.length > 9) {
+                        telefone = telefone.slice(0, 9);
+                      }
+                      setFieldValue("telefone", telefone);
+                    }}
+                  />
+                </div>
+                <ErrorMessage name="telefone" component="div" className="text-red-500 text-sm" />
+
+                <Button type="submit" disabled={isSubmitting} className="mt-6">
+                  {isSubmitting ? "Salvando..." : "Salvar"}
+                </Button>
+                </Form>
+              )}
+            </Formik>
+          )
         )}
-      </Formik>
+      </div>
     </div>
   );
 };
