@@ -7,7 +7,7 @@ import { useAuth } from "@/context/auth-context";
 import { capa, ImgUser } from "@/assets/imagens";
 import Loading from "@/components/Loading";
 import { whatsapp } from "@/assets/imagens";
-import { Clock } from "lucide-react";
+import { ArrowLeft, Clock } from "lucide-react";
 import { useNav } from "@/context/nav-context";
 import CardProduto from "@/components/cardProduto";
 
@@ -111,6 +111,9 @@ const DetalheVendedor = () => {
                             className="relative w-full h-40 md:h-56 bg-cover bg-center"
                             style={{ backgroundImage: `url(${vendedor.imagemCapa || capa})` }}
                         >
+                            <button onClick={() => navigate(-1)} className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md">
+                                      <ArrowLeft className="w-6 h-6 text-white" />
+                                    </button>
                 
                             <div className="absolute left-1/2 transform -translate-x-1/2 bottom-[-40px] w-24 h-24 md:w-24 md:h-24 bg-primary rounded-full overflow-hidden border-4 border-primary shadow-lg">
                                 <img
