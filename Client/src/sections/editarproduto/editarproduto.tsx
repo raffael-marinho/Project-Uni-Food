@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const EditarProduto = () => {
     const [file, setFile] = useState<File | null>(null);
@@ -130,6 +131,11 @@ const EditarProduto = () => {
     return (
         <div className="flex flex-col items-center h-screen">
             <NavBarVenda />
+            <div className="relative top-0 right-40 p-5">
+            <button onClick={() => navigate(-1)} className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md">
+          <ArrowLeft className="w-6 h-6 text-white" />
+        </button>
+            </div>
             <h1 className="text-2xl font-semibold mt-4 mb-4">Editar Produto</h1>
             <Formik
                 initialValues={{
