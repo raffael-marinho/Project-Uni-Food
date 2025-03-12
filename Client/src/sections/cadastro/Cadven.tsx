@@ -301,8 +301,8 @@ const Cadven = () => {
                 </Button>
                 <p className="text-center mb-20">
                   Ja possui uma conta?{" "}
-                  <Link to="/login" className="text-primary">
-                    Faca login
+                  <Link to="/loginvenda" className="text-foreground font-semibold">
+                    Faça login
                   </Link>
                 </p>
               </div>
