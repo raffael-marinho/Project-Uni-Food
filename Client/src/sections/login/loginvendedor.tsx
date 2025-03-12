@@ -124,8 +124,19 @@ function LoginVendedor() {
               {isSubmitting ? "Entrando..." : "Entrar"}
             </Button>
           </Form>
+          
         )}
+        
       </Formik>
+      <div className="flex flex-col items-center justify-center  text-center mt-6 ">
+        <Link to="/recuperarsenha" className="text-foreground font-semibold mb-16">Esqueceu sua senha?</Link>
+        <div className="w-64">
+        <span className="text-foreground w-64">  Se você ainda não possui uma conta?</span>
+        <Link to="/cadastrovendedor" className="text-foreground font-semibold"> Cadastre-se</Link>
+        </div>
+     
+      </div>
+
     </div>
   );
 }
