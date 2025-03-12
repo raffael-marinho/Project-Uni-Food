@@ -20,21 +20,13 @@ interface Produto {
 }
 
 
-const VendedorPerfil: React.FC<{ statusInicial?: string }> = ({ statusInicial = "Aberto" }) => {
+const VendedorPerfil: React.FC<{}> = ({}) => {
   const [loading, setLoading] = useState(true);
   const [produtosExibidos, setProdutosExibidos] = useState(3);
   const [loadingMore, setLoadingMore] = useState(false);
   const [produtos, setProdutos] = useState<Produto[]>([]); // Estado para armazenar os produtos do vendedor
   const navigate = useNavigate();
 
-  const [status, setStatus] = useState(statusInicial);
-  const alternarStatus = () => {
-    setStatus((prevStatus) => (prevStatus.toLowerCase() === "aberto" ? "Fechado" : "Aberto"));
-  };
-
-  useEffect(() => {
-    setStatus(statusInicial);
-  }, [statusInicial]);
 
 
   const { vendedor } = useVendedor(); // Obtendo o vendedor do contexto
@@ -111,12 +103,12 @@ const VendedorPerfil: React.FC<{ statusInicial?: string }> = ({ statusInicial = 
       {/* Nome do Vendedor */}
       <div className="mt-12 text-center">
         <div className="flex flex-col items-center">
-          <h1 className="text-xl font-bold mt-4 whitespace-nowrap overflow-hidden text-ellipsis">{vendedor?.nome || "Nome do Vendedor"}</h1>
+          <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">{vendedor?.nome || "Nome do Vendedor"}</h1>
           <h1 className="text-lg font-medium whitespace-nowrap overflow-hidden text-ellipsis ">{vendedor?.descricao || "Descrição do Vendedor"}</h1>
           <div className="flex items-center mt-4">
             <img src={whatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
             <a href={`https://wa.me/${vendedor?.telefone}`} target="_blank" rel="noopener noreferrer">
-              <p className="text-sm font-semibold">Entrar em contato</p>
+              <p className="text-sm font-semibold">{vendedor?.telefone || "Telefone do Vendedor"}</p>
             </a>
           </div>
           <p
@@ -124,15 +116,10 @@ const VendedorPerfil: React.FC<{ statusInicial?: string }> = ({ statusInicial = 
               }`}
           >
             <Clock className="w-6 h-6 mr-2" />
-            {status || "Status do Vendedor"}
+            {vendedor?.status || "Status do Vendedor"}
 
           </p>
-          <button
-            onClick={alternarStatus}
-            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-          >
-            Alternar Status
-          </button>
+    
         </div>
       </div>
 
@@ -147,7 +134,7 @@ const VendedorPerfil: React.FC<{ statusInicial?: string }> = ({ statusInicial = 
         <h1 className="text-base font-semibold pt-4 pb-2">Produtos</h1>
         <div className="flex flex-col gap-4">
           {produtos.slice(0, produtosExibidos).map((produto, index) => (
-            <div key={index} onClick={() => navigate(`/editarproduto/${produto._id}`)}>
+            <div key={index} onClick={() => navigate(`/produtovendedor/${produto._id}`)}>
               <CardProduto
                 key={index}
                 nome={produto.nome}
