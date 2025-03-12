@@ -45,6 +45,7 @@ const Cadven = () => {
           description: "Somente arquivos JPG ou PNG são permitidos.",
           variant: "destructive",
           duration: 2000,
+          className: "translate-y-7",
         });
         return; // Impede a seleção de imagem inválida
       }
@@ -55,6 +56,7 @@ const Cadven = () => {
           description: "A imagem não pode exceder 5MB.",
           variant: "destructive",
           duration: 2000,
+          className: "translate-y-7",
         });
         return; // Impede a seleção de imagem muito grande
       }
@@ -94,7 +96,7 @@ const Cadven = () => {
       });
 
       // Redireciona para o login após sucesso
-      navigate("/login");
+      navigate("/loginvenda");
     } catch (error) {
       toast({
         title: "Erro ao realizar cadastro",
