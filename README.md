@@ -39,8 +39,9 @@ MySQL: Banco de dados relacional para armazenamento de dados.
 Nodemon: Reinicia automaticamente o servidor ao detectar alterações no código-fonte.
 
 
-<img width="1297" alt="02 (2)" src="https://github.com/pauloJ-r/Projeto-recifArt/assets/62119732/1e7fc1e7-7325-4a04-b301-1e824a13d69c">
-<img width="1297" alt="03" src="https://github.com/pauloJ-r/Projeto-recifArt/assets/62119732/dc9d821c-076f-4675-b03e-8bbe0b0c38d8">
+<img width="1297" alt="02 (2)" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/letra.svg">
+<img width="1297" alt="03" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/food%20truck.jpg">
+<img width="1297" alt="03" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/paletadecores.svg">
 
 
 ## Acessar a Página 
