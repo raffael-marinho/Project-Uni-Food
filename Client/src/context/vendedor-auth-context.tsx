@@ -15,6 +15,7 @@ interface Vendedor {
 interface VendedorContextProps {
   vendedor: Vendedor | null;
   loading: boolean;
+  isAuthVendedor: boolean;
   login: (vendedor: Vendedor, token: string) => void;
   logout: () => void;
   updateVendedor: (updatedVendedor: Partial<Vendedor>) => void;
@@ -72,8 +73,10 @@ export const VendedorProvider: React.FC<{ children: ReactNode }> = ({ children }
     });
   };
 
+  const isAuthVendedor = !!vendedor && !!token; 
+
   return (
-    <VendedorContext.Provider value={{ vendedor, token, loading, login, logout, updateVendedor }}>
+    <VendedorContext.Provider value={{ vendedor, token, loading, login, logout, updateVendedor, isAuthVendedor}}>
       {children}
     </VendedorContext.Provider>
   );

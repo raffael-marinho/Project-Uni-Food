@@ -12,6 +12,7 @@ interface User {
 interface AuthContextProps {
   user: User | null;  
   token: string | null;
+  isAuth: boolean;
   login: (user: User, token: string) => void;
   logout: () => void;
   updateUser: (updatedUser: Partial<User>) => void;  
@@ -72,10 +73,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return prevUser;
     });
     localStorage.setItem("user", JSON.stringify({ ...user, ...updatedUser }));
+
+    
   };
 
+  const isAuth = !!user && !!token;
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, updateUser, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, loading, isAuth }}>
       {children}
     </AuthContext.Provider>
   );
