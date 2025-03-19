@@ -69,3 +69,6 @@ input[type="search"]::-webkit-search-cancel-button {
   filter: invert(49%) sepia(38%) saturate(289%) hue-rotate(345deg) brightness(92%) contrast(87%);
 }
 
+body.keyboard-visible {
+  padding-bottom: 200px; /* Ajuste de acordo com o tamanho do teclado */
+}

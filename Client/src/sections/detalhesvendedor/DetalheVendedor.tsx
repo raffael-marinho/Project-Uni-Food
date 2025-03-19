@@ -105,7 +105,7 @@ const DetalheVendedor = () => {
                         <Loading />
                     </div>
                 ) : vendedor ? (
-                    <div className="flex flex-col w-full mb-16">
+                    <div className="flex flex-col w-full ">
 
                         <div
                             className="relative w-full h-40 md:h-56 bg-cover bg-center"
@@ -143,10 +143,10 @@ const DetalheVendedor = () => {
                         </div>
 
                     
-                        <div className="flex flex-col items-start p-5">
+                        <div className="flex flex-col items-start p-5 ">
                             <h1 className="text-lg font-bold mt-4">Produtos</h1>
                             {produtos.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 mb-16">
                                 {produtos.map((produto) => (
                                     <div
                                         key={produto._id}

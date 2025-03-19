@@ -1,6 +1,6 @@
 import NavBarVenda from "@/components/NavBarVenda";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useVendedor } from "@/context/vendedor-auth-context";
 import { NumericFormat } from "react-number-format";
@@ -11,14 +11,46 @@ import * as Yup from "yup";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Keyboard } from "@capacitor/keyboard";
 
 const EditarProduto = () => {
-    const [file, setFile] = useState<File | null>(null);
-    const [imageError, setImageError] = useState<string | null>(null);
     const { vendedor, token } = useVendedor();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const [produto, setProduto] = useState<any>(null);
+    
+    useEffect(() => {
+        const setupKeyboardListeners = async () => {
+            const keyboardWillShow = await Keyboard.addListener("keyboardWillShow", () => {
+                document.body.classList.add("keyboard-visible");
+            });
+    
+            const keyboardWillHide = await Keyboard.addListener("keyboardWillHide", () => {
+                document.body.classList.remove("keyboard-visible");
+            });
+    
+            // Retorna a função de limpeza
+            return () => {
+                keyboardWillShow.remove();
+                keyboardWillHide.remove();
+            };
+        };
+    
+        // Chama a função para configurar os listeners
+        const cleanup = setupKeyboardListeners();
+    
+        // Espera que a Promise seja resolvida antes de chamar a função de limpeza
+        cleanup.then((clean) => {
+            return () => {
+                clean();  // Agora, a função de limpeza será chamada corretamente após a promessa ser resolvida
+            };
+        });
+    
+        // Limpeza ao desmontar
+        return () => {
+            cleanup.then((clean) => clean());
+        };
+    }, []);
 
     useEffect(() => {
         const fetchProduto = async () => {
@@ -50,26 +82,7 @@ const EditarProduto = () => {
             .required("A quantidade é obrigatória."),
     });
 
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files ? e.target.files[0] : null;
-        if (selectedFile) {
-            const isValidImageType = ["image/jpeg", "image/png"].includes(selectedFile.type);
-            const isValidSize = selectedFile.size <= 5 * 1024 * 1024;
 
-            if (!isValidImageType) {
-                setImageError("Apenas imagens JPG e PNG são permitidas.");
-                return;
-            }
-
-            if (!isValidSize) {
-                setImageError("A imagem deve ter no máximo 5MB.");
-                return;
-            }
-
-            setImageError(null);
-            setFile(selectedFile);
-        }
-    };
 
     const handleSubmit = async (values: any) => {
         const formData = new FormData();
@@ -79,9 +92,7 @@ const EditarProduto = () => {
         formData.append("descricao", values.descricao);
         formData.append("quantidade", String(values.quantidade));
 
-        if (file) {
-            formData.append("file", file);
-        }
+
 
         if (vendedor?.id) {
             formData.append("vendedor", vendedor.id);
@@ -93,7 +104,7 @@ const EditarProduto = () => {
         try {
             await axios.put(`${apiUrl}/produto/${id}`, formData, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
@@ -121,7 +132,7 @@ const EditarProduto = () => {
 
     if (!produto) {
         return (
-            <div className="flex flex-col items-center h-screen">
+            <div className="flex flex-col items-center h-screen overflow-x-hidden">
                 <NavBarVenda />
                 <Loading />
             </div>
@@ -129,7 +140,7 @@ const EditarProduto = () => {
     }
 
     return (
-        <div className="flex flex-col items-center h-screen">
+        <div className="flex flex-col items-center h-screen overflow-x-hidden">
             <NavBarVenda />
             <div className="relative top-0 right-40 p-5">
             <button onClick={() => navigate(-1)} className="absolute top-4 left-4 bg-primary p-2 rounded-full shadow-md">
@@ -152,28 +163,6 @@ const EditarProduto = () => {
                 {({ setFieldValue, values }) => (
                     <Form>
                         <div className="flex flex-col justify-center w-72 gap-4">
-                        <div>
-                                <label htmlFor="imagem" className="text-foreground font-semibold">
-                                    Imagem do produto
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        id="file-upload"
-                                        type="file"
-                                        accept="image/jpeg, image/png"
-                                        className="hidden"
-                                        onChange={handleImageChange}
-                                    />
-                                    <label
-                                        htmlFor="file-upload"
-                                        className="bg-foreground text-white p-2 rounded-sm w-[300px] cursor-pointer hover:bg-foreground transition-all flex justify-center items-center"
-                                    >
-                                        {file ? file.name : "Escolher arquivo"}
-                                    </label>
-                                    {imageError && <p className="text-primary">{imageError}</p>}
-                                </div>
-                            </div>
-
                             <div>
                                 <label className="text-foreground font-semibold">Nome</label>
                                 <Field

@@ -19,7 +19,7 @@ const PerfilVendedor = () => {
     // Função para sair e redirecionar para login
     const handleLogout = () => {
         logout ();
-        navigate("/"); 
+        navigate("/index"); 
     };
 
     return (

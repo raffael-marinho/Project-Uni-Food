@@ -7,6 +7,7 @@ import { Toaster } from './components/ui/toaster';
 import { AuthProvider } from './context/auth-context';
 import { NavProvider } from './context/nav-context';
 import { VendedorProvider } from './context/vendedor-auth-context';
+import { HashRouter } from 'react-router-dom';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')!).render(
     <VendedorProvider>
     <NavProvider>
     <ToastProvider> 
+      <HashRouter>
       <App />
+      </HashRouter>
       <Toaster /> 
     </ToastProvider>
     </NavProvider>

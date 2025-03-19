@@ -8,13 +8,48 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast.ts";
 import { Link, useNavigate } from "react-router-dom";
 import apiUrl from "../../utils/Api.ts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Keyboard } from "@capacitor/keyboard";
 
 function LoginVendedor() {
   const { login } = useVendedor(); // Acessando o contexto
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+
+  
+      useEffect(() => {
+          const setupKeyboardListeners = async () => {
+              const keyboardWillShow = await Keyboard.addListener("keyboardWillShow", () => {
+                  document.body.classList.add("keyboard-visible");
+              });
+  
+              const keyboardWillHide = await Keyboard.addListener("keyboardWillHide", () => {
+                  document.body.classList.remove("keyboard-visible");
+              });
+  
+              // Retorna a função de limpeza
+              return () => {
+                  keyboardWillShow.remove();
+                  keyboardWillHide.remove();
+              };
+          };
+  
+          // Chama a função para configurar os listeners
+          const cleanup = setupKeyboardListeners();
+  
+          // Espera que a Promise seja resolvida antes de chamar a função de limpeza
+          cleanup.then((clean) => {
+              return () => {
+                  clean();  // Agora, a função de limpeza será chamada corretamente após a promessa ser resolvida
+              };
+          });
+  
+          // Limpeza ao desmontar
+          return () => {
+              cleanup.then((clean) => clean());
+          };
+      }, []);
 
   return (
     <div className="flex flex-col h-screen">
