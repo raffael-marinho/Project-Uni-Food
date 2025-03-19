@@ -1,10 +1,10 @@
-# Projeto Recifart
+# UniFood
 
-Recifart é um projeto inovador concebido durante o processo do programa start, desenvolvido com o objetivo de conectar empresas a pontos de coleta e proporcionar um marketplace integrado para artesãos. Essa iniciativa visa promover eficiência na gestão de resíduos, ao mesmo tempo em que amplia a visibilidade e os recursos disponíveis para os criativos envolvidos. É importante ressaltar que o projeto foi desenvolvido como parte de um hackathon organizado pela Accenture em parceria com a Start, onde nosso grupo conquistou o primeiro lugar. Essa conquista atesta não apenas a viabilidade e o potencial impacto do Recifart, mas também a qualidade e a inovação do trabalho desenvolvido pela equipe.
+ Este projeto surge da necessidade de organizar e centralizar o sistema de vendas de lanches dentro do campus, que atualmente é feito de forma descentralizada, principalmente por meio de grupos de WhatsApp. A criação deste aplicativo visa facilitar a vida dos usuários no campus, proporcionando uma plataforma única e organizada para a compra e venda de lanches, além de aumentar o potencial de lucro para os vendedores envolvidos.
 
-<img width="1297" alt="01" src="https://github.com/pauloJ-r/Projeto-recifArt/assets/62119732/3a6fcef4-c7b2-4311-a026-d6663c7a0286">
+ <img width="1297" alt="prooject" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/logo.jpg">
 
-<img width="1297" alt="prooject" src="https://github.com/pauloJ-r/Projeto-recifArt/assets/62119732/ae4151fd-fe08-4392-91e1-ca13b84025b9">
+ <img width="1297" alt="01" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/kitvenda.jpg">
 
 ## Tecnologias Utilizadas
 
