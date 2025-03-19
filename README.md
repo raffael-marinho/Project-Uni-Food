@@ -2,9 +2,9 @@
 
  Este projeto surge da necessidade de organizar e centralizar o sistema de vendas de lanches dentro do campus, que atualmente é feito de forma descentralizada, principalmente por meio de grupos de WhatsApp. A criação deste aplicativo visa facilitar a vida dos usuários no campus, proporcionando uma plataforma única e organizada para a compra e venda de lanches, além de aumentar o potencial de lucro para os vendedores envolvidos.
 
- <img width="1297" alt="prooject" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/logo.jpg">
+ <img width="1297" alt="prooject" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/logo.svg">
 
- <img width="1297" alt="01" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/kitvenda.jpg">
+ <img width="1297" alt="01" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/kitvenda.svg">
 
 ## Tecnologias Utilizadas
 
