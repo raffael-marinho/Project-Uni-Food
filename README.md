@@ -4,7 +4,7 @@
 
  <img width="1297" alt="prooject" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/logo.svg">
 
- <img width="1297" alt="01" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/kitvenda.svg">
+ <img width="1297" alt="01" src="https://github.com/raffael-marinho/Project-Uni-Food/blob/main/Client/src/assets/imagens-assets/kitvenda.jpg">
 
 ## Tecnologias Utilizadas
 
