@@ -9,6 +9,7 @@ import apiUrl from "@/utils/Api";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Loading from "@/components/Loading";
+import { Keyboard } from "@capacitor/keyboard";
 
 interface Vendedor {
     id: string;
@@ -31,14 +32,45 @@ const EditarPerfilVendedor: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const { token } = useVendedor();
 
+
+    useEffect(() => {
+        const setupKeyboardListeners = async () => {
+            const keyboardWillShow = await Keyboard.addListener("keyboardWillShow", () => {
+                document.body.classList.add("keyboard-visible");
+            });
+
+            const keyboardWillHide = await Keyboard.addListener("keyboardWillHide", () => {
+                document.body.classList.remove("keyboard-visible");
+            });
+
+            // Retorna a função de limpeza
+            return () => {
+                keyboardWillShow.remove();
+                keyboardWillHide.remove();
+            };
+        };
+
+        // Chama a função para configurar os listeners
+        const cleanup = setupKeyboardListeners();
+
+        // Espera que a Promise seja resolvida antes de chamar a função de limpeza
+        cleanup.then((clean) => {
+            return () => {
+                clean();  // Agora, a função de limpeza será chamada corretamente após a promessa ser resolvida
+            };
+        });
+
+        // Limpeza ao desmontar
+        return () => {
+            cleanup.then((clean) => clean());
+        };
+    }, []);
+
     const validationSchema = Yup.object({
         nome: Yup.string()
             .min(3, "O nome deve ter pelo menos 3 caracteres")
             .max(50, "O nome não pode ter mais de 50 caracteres")
             .required("O nome é obrigatório"),
-        telefone: Yup.string()
-            .matches(/^\d{9}$/, "O telefone deve ter 9 dígitos")
-            .required("O telefone é obrigatório"),
         descricao: Yup.string()
             .max(500, "A descrição não pode ter mais de 500 caracteres")
             .required("A descrição é obrigatória"),
@@ -118,7 +150,7 @@ const EditarPerfilVendedor: React.FC = () => {
                 updateVendedor({ ...vendedor, ...updatedFields });
             }
 
-            navigate(`/perfil-vendedor/${id}`);
+            navigate(`/perfilvendedor/${id}`);
         } catch (error) {
             console.error("Erro ao atualizar o perfil:", error);
             toast({
@@ -132,9 +164,9 @@ const EditarPerfilVendedor: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen overflow-x-hidden">
             <div className="flex p-6">
-                <Link to={`/perfil-vendedor/${id}`} className="bg-primary p-2 rounded-full shadow-md">
+                <Link to={`/perfilvendedor/${id}`} className="bg-primary p-2 rounded-full shadow-md">
                     <ArrowLeft className="w-6 h-6 text-white" />
                 </Link>
             </div>
@@ -166,13 +198,16 @@ const EditarPerfilVendedor: React.FC = () => {
                                     <label htmlFor="nome" className="block mb-2 font-semibold">Nome</label>
                                     <Field id="nome" name="nome"
                                         className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E] 
-                    text-foreground focus:border-foreground focus:outline-none focus:text-foreground mb-6"
+                                     text-foreground focus:border-foreground focus:outline-none focus:text-foreground mb-6"
                                     />
-                                    <ErrorMessage name="nome" component="div" className="text-red-500 text-sm" />
+                                    <ErrorMessage name="nome" component="div" className="text-primary text-sm" />
 
                                     <label htmlFor="telefone" className="block mb-2 font-semibold">Telefone</label>
                                     <div className="flex items-center border-2 border-[#CE9E7E] p-2 rounded-sm w-[300px] bg-transparent text-foreground focus-within:border-foreground focus-within:outline-none">
-                                        <span className="text-primary">+55 81</span>
+                                        <div className="flex flex-row items-center">
+                                            <span className="text-primary mr-2">+55</span>
+                                            <span className="text-primary mr-2">81</span>{/* Tamanho fixo e margem */}
+                                        </div>
                                         <Field
                                             id="telefone"
                                             name="telefone"
@@ -189,9 +224,9 @@ const EditarPerfilVendedor: React.FC = () => {
                                             }}
                                         />
                                     </div>
-                                    <ErrorMessage name="telefone" component="div" className="text-red-500 text-sm" />
+                                    <ErrorMessage name="telefone" component="div" className="text-primary text-sm" />
 
-                                    <label htmlFor="descricao" className="block mb-2 font-semibold">Descrição</label>
+                                    <label htmlFor="descricao" className="block mb-2 font-semibold mt-2">Descrição</label>
                                     <Field
                                         id="descricao"
                                         name="descricao"
@@ -199,7 +234,8 @@ const EditarPerfilVendedor: React.FC = () => {
                                         className="border-2 border-[#CE9E7E] p-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E] text-foreground focus:border-foreground focus:outline-none focus:text-foreground mb-6"
                                         placeholder="Descreva seu serviço..."
                                     />
-                                    <ErrorMessage name="descricao" component="div" className="text-red-500 text-sm" />
+                                    <ErrorMessage name="descricao" component="div" className="text-primary text-sm" />
+                                    
 
                                     <Button type="submit" disabled={isSubmitting} className="mt-6">
                                         {isSubmitting ? "Salvando..." : "Salvar"}

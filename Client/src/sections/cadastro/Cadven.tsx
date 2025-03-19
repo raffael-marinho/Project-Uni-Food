@@ -2,12 +2,13 @@ import { uni } from "@/assets/imagens";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { User, Mail, KeyRound, EyeOff, Eye, ArrowLeft, Plus } from "lucide-react";
+import { User, Mail, KeyRound, EyeOff, Eye, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast.ts";
 import { Link, useNavigate } from "react-router-dom";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import apiUrl from "../../utils/Api.ts";
+import { Keyboard } from "@capacitor/keyboard";
 
 // Definindo o tipo dos valores do formulário
 interface VendedorFormValues {
@@ -28,6 +29,39 @@ const Cadven = () => {
   const [step, setStep] = useState(1); // Controle da etapa
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<File | null>(null);
+  
+  useEffect(() => {
+    const setupKeyboardListeners = async () => {
+        const keyboardWillShow = await Keyboard.addListener("keyboardWillShow", () => {
+            document.body.classList.add("keyboard-visible");
+        });
+
+        const keyboardWillHide = await Keyboard.addListener("keyboardWillHide", () => {
+            document.body.classList.remove("keyboard-visible");
+        });
+
+        // Retorna a função de limpeza
+        return () => {
+            keyboardWillShow.remove();
+            keyboardWillHide.remove();
+        };
+    };
+
+    // Chama a função para configurar os listeners
+    const cleanup = setupKeyboardListeners();
+
+    // Espera que a Promise seja resolvida antes de chamar a função de limpeza
+    cleanup.then((clean) => {
+        return () => {
+            clean();  // Agora, a função de limpeza será chamada corretamente após a promessa ser resolvida
+        };
+    });
+
+    // Limpeza ao desmontar
+    return () => {
+        cleanup.then((clean) => clean());
+    };
+}, []);
 
   // Função para lidar com a mudança da imagem
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,10 +69,10 @@ const Cadven = () => {
     if (selectedFile) {
       // Verifica o tipo de imagem
       const isValidImageType = selectedFile.type === "image/jpeg" || selectedFile.type === "image/png";
-      
+
       // Verifica o tamanho do arquivo (máximo 5MB)
       const isValidSize = selectedFile.size <= 5 * 1024 * 1024; // 5MB em bytes
-  
+
       if (!isValidImageType) {
         toast({
           title: "Erro no formato da imagem",
@@ -49,7 +83,7 @@ const Cadven = () => {
         });
         return; // Impede a seleção de imagem inválida
       }
-  
+
       if (!isValidSize) {
         toast({
           title: "Erro no tamanho da imagem",
@@ -60,7 +94,7 @@ const Cadven = () => {
         });
         return; // Impede a seleção de imagem muito grande
       }
-  
+
       setFile(selectedFile); // Atualiza o estado do arquivo
       setImage(selectedFile); // Atualiza a imagem para o preview
     }
@@ -109,7 +143,7 @@ const Cadven = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen overflow-x-hidden">
 
 
       <Formik
@@ -136,15 +170,11 @@ const Cadven = () => {
       >
         {({ values, handleChange, handleBlur, errors, touched, setFieldValue, isValid }) => (
 
-          <Form className="flex flex-col gap-6 items-center">
+          <Form className="flex flex-col items-center justify-center">
 
             {step === 1 ? (
-              <div className="flex flex-col w-[300px] gap-4">
-                <div className="flex items-center pt-6">
-                  <Link to="/logincliente" className="bg-primary p-2 rounded-full shadow-md">
-                    <ArrowLeft className="w-6 h-6 text-white" />
-                  </Link>
-                </div>
+              <div className="flex flex-col mt-16 mb-12">
+        
 
                 <div className="flex flex-col items-center justify-center">
                   <img src={uni} className="w-20 h-20 mb-5" alt="" />
@@ -190,7 +220,10 @@ const Cadven = () => {
                   <div className="relative">
                     <label htmlFor="telefone" className="block mb-1 font-semibold">Whatsapp</label>
                     <div className="flex items-center border-2 border-[#CE9E7E] p-2 rounded-sm w-[300px] bg-transparent text-foreground focus-within:border-foreground focus-within:outline-none">
-                      <span className="text-primary">+55 81</span>
+                      <div className="flex flex-row items-center">
+                        <span className="text-primary mr-2">+55</span>
+                        <span className="text-primary mr-2">81</span>{/* Tamanho fixo e margem */}
+                      </div>
                       <Field
                         id="telefone"
                         name="telefone"
@@ -222,7 +255,7 @@ const Cadven = () => {
                       name="chavePix"
                       type="text"
                       placeholder="Chave Pix"
-                      className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E] hover:border-foreground focus:border-foreground focus:outline-none focus:text-foreground" 
+                      className="border-2 border-[#CE9E7E] p-2 pr-10 pl-2 rounded-sm w-[300px] bg-transparent placeholder-[#CE9E7E] hover:border-foreground focus:border-foreground focus:outline-none focus:text-foreground"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.chavePix}
@@ -294,12 +327,12 @@ const Cadven = () => {
                       console.log("Preencha todos os campos corretamente");
                     }
                   }}
-                  className="w-[300px] bg-primary"
+                  className={`w-[300px] bg-primary mt-7 `}
                   disabled={!isValid} // Desabilita o botão caso o formulário não seja válido
                 >
                   Próximo
                 </Button>
-                <p className="text-center mb-20">
+                <p className="text-center mt-7">
                   Ja possui uma conta?{" "}
                   <Link to="/loginvenda" className="text-foreground font-semibold">
                     Faça login

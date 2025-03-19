@@ -1,6 +1,6 @@
 import NavBarVenda from "@/components/NavBarVenda";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import axios from "axios";
 import { useVendedor } from "@/context/vendedor-auth-context";
 import { NumericFormat } from "react-number-format";
@@ -8,12 +8,46 @@ import apiUrl from "@/utils/Api";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup"; 
+import { Keyboard } from "@capacitor/keyboard";
 
 const AdicionarProduto = () => {
     const [file, setFile] = useState<File | null>(null);
     const [imageError, setImageError] = useState<string | null>(null); 
     const { vendedor, token } = useVendedor(); 
     const navigate = useNavigate();
+
+      useEffect(() => {
+        const setupKeyboardListeners = async () => {
+            const keyboardWillShow = await Keyboard.addListener("keyboardWillShow", () => {
+                document.body.classList.add("keyboard-visible");
+            });
+    
+            const keyboardWillHide = await Keyboard.addListener("keyboardWillHide", () => {
+                document.body.classList.remove("keyboard-visible");
+            });
+    
+            // Retorna a função de limpeza
+            return () => {
+                keyboardWillShow.remove();
+                keyboardWillHide.remove();
+            };
+        };
+    
+        // Chama a função para configurar os listeners
+        const cleanup = setupKeyboardListeners();
+    
+        // Espera que a Promise seja resolvida antes de chamar a função de limpeza
+        cleanup.then((clean) => {
+            return () => {
+                clean();  // Agora, a função de limpeza será chamada corretamente após a promessa ser resolvida
+            };
+        });
+    
+        // Limpeza ao desmontar
+        return () => {
+            cleanup.then((clean) => clean());
+        };
+    }, []);
 
     // Validação do Yup
     const validationSchema = Yup.object().shape({
@@ -99,7 +133,7 @@ const AdicionarProduto = () => {
     };
 
     return (
-        <div className="flex flex-col items-center h-screen">
+        <div className="flex flex-col items-center h-screen overflow-x-hidden">
             <NavBarVenda />
             <h1 className="text-2xl font-semibold mt-4 mb-4">Adicionar Produto</h1>
             <Formik
