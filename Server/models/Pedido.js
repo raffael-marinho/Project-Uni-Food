@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const pedidoSchema = new mongoose.Schema({
+  codigoPedido: {
+    type: String, // Código de 2 caracteres
+    required: true,
+  },
   cliente: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Cliente',
@@ -29,7 +33,7 @@ const pedidoSchema = new mongoose.Schema({
   }],
   status: {
     type: String,
-    enum: ['Pendente', 'Em andamento', 'Finalizado', 'Cancelado'],
+    enum: ['Pendente', 'Aceito', 'Finalizado', 'Cancelado'],
     default: 'Pendente',
   },
   dataPedido: {
@@ -37,11 +41,5 @@ const pedidoSchema = new mongoose.Schema({
     default: Date.now,
   },
 }, { timestamps: true });
-
-// Middleware para calcular o total antes de salvar
-pedidoSchema.pre('save', function (next) {
-  this.total = this.produtos.reduce((acc, item) => acc + item.quantidade * item.precoUnitario, 0);
-  next();
-});
 
 module.exports = mongoose.model('Pedido', pedidoSchema);
