@@ -35,11 +35,16 @@ app.use(cors({
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASS;
 
-mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@cluster0.qkzbs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
-    .then(() => {
-        app.use(routes);
-        app.listen(3000, () => {
-            console.log('Conectado ao banco!');
-        });
-    })
-    .catch((err) => console.log(err));
+// String de conexão com o MongoDB
+mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@cluster0.qkzbs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 60000, // 60 segundos
+    socketTimeoutMS: 60000, // 60 segundos
+})
+.then(() => {
+    console.log("Conectado ao banco!");
+    app.use(routes);
+    app.listen(3000, () => console.log('Servidor rodando na porta 3000!'));
+})
+.catch((err) => console.error("Erro ao conectar ao MongoDB:", err));

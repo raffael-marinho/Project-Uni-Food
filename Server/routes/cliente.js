@@ -23,9 +23,7 @@ router.post("/",
 
 
 // Rota para obter todos os clientes
-router.get("/",
-    validarExistencia('cliente'),
-    ClienteController.getAllClientes);
+router.get("/",ClienteController.getAllClientes);
 
 
 // Rota para obter um cliente por ID

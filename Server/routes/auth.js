@@ -6,6 +6,8 @@ const multer = require('multer');
 const { getAuth,sendPasswordResetEmail } = require("firebase-admin/auth");
 const axios = require("axios");
 require("dotenv").config();
+const nodemailer = require('nodemailer');
+const enviarEmail = require('../config/emailService');
 
 
 
@@ -34,7 +36,7 @@ const admin = require('firebase-admin'); // Firebase Admin SDK
 
 
 router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 'imagemCapa' }]), async (req, res) => {
-    const { nome, email, senha, confirmasenha, telefone } = req.body;
+    const { nome, email, senha, confirmasenha, telefone, chavePix } = req.body;
     const { tipo } = req.params; // Tipo: vendedor ou cliente
 
     if (!nome || !email || !senha) {
@@ -83,7 +85,14 @@ router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 
             }
         };
 
-        // Apenas vendedores podem enviar imagens
+        let dadosUsuario = {
+            firebaseUID: userRecord.uid,
+            nome,
+            email,
+            telefone
+        };
+
+        // Apenas vendedores podem enviar imagens e chave Pix
         if (tipo === 'vendedor') {
             if (req.files.imagemPerfil) {
                 imagemPerfilUrl = await uploadImagem(req.files.imagemPerfil[0], 'perfil');
@@ -91,19 +100,19 @@ router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 
             if (req.files.imagemCapa) {
                 imagemCapaUrl = await uploadImagem(req.files.imagemCapa[0], 'capa');
             }
+
+            // Adicionar imagens e chave Pix ao objeto do vendedor
+            dadosUsuario.imagemPerfil = imagemPerfilUrl;
+            dadosUsuario.imagemCapa = imagemCapaUrl;
+            if (chavePix) {
+                dadosUsuario.chavePix = chavePix;
+            }
         }
 
         // Criar usuário no MongoDB
-        const user = new Model({
-            firebaseUID: userRecord.uid, // Armazena UID do Firebase no MongoDB
-            nome,
-            email,
-            telefone,
-            imagemPerfil: imagemPerfilUrl, 
-            imagemCapa: imagemCapaUrl
-        });
-
+        const user = new Model(dadosUsuario);
         await user.save();
+
         res.status(201).json({
             msg: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} criado com sucesso!`,
             user
@@ -114,6 +123,7 @@ router.post('/register/:tipo', upload.fields([{ name: 'imagemPerfil' }, { name: 
         res.status(500).json({ msg: 'Erro no servidor', error });
     }
 });
+
 
 module.exports = router;
 
@@ -163,6 +173,10 @@ router.post("/login/:tipo", async (req, res) => {
                 email: user.email,
                 imagemPerfil: user.imagemPerfil,
                 telefone: user.telefone,
+                descricao: user.descricao,
+                chavePix: user.chavePix,
+                imagemCapa: user.imagemCapa,
+                status: user.status,
             },
         });
     } catch (error) {
@@ -183,6 +197,13 @@ router.post("/reset-password", async (req, res) => {
     try {
         // Gera um link para redefinição de senha
         const resetLink = await admin.auth().generatePasswordResetLink(email);
+
+
+
+        // Envia o link para o e-mail do usuário usando o nodemailer
+        const mensagem = `<p>Olá, clique no link abaixo para redefinir sua senha:</p><p><a href="${resetLink}">${resetLink}</a></p>`;
+        enviarEmail(email, "Redefinição de Senha", mensagem);
+
 
         res.status(200).json({
             msg: "Link para redefinição de senha gerado com sucesso",
