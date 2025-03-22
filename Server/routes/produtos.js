@@ -1,50 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const checkToken = require('../middlewares/authMiddleware');
+const upload = require('../config/multer');
 
 const ProdutoController = require('../controllers/ProdutoController');
 
-const {
-    validarExistenciaDeProdutos,
-    validarTiposDeDadosProduto,
-    validarDadosObrigatoriosProduto,
-    validarPermissaoProduto,
-} = require('../middlewares/validacoes');
-
 // Rota para criar um produto
-router.post('/',
-    checkToken,
-    validarDadosObrigatoriosProduto,
-    validarTiposDeDadosProduto,
-    ProdutoController.postProduto);
+router.post('/', checkToken, upload.single('file'),ProdutoController.postProduto);
 
 
 // Rota para obter todos os produtos
 router.get('/',
-    validarExistenciaDeProdutos,
     ProdutoController.getAllProdutos);
 
 
 // Rota para obter um produto por ID
 router.get('/:id',
-    validarExistenciaDeProdutos,
     ProdutoController.getOneProduto);
 
 
 // Rota para atualizar um produto
-router.put('/:id',
-    checkToken,
-    validarDadosObrigatoriosProduto,
-    validarTiposDeDadosProduto,
-    validarPermissaoProduto,
-    ProdutoController.updateProduto);
+router.put('/:produtoId', checkToken,ProdutoController.updateProduto);
 
 
 // Rota para excluir um produto
 router.delete('/:id',
-    checkToken,
-    validarExistenciaDeProdutos,
-    validarPermissaoProduto,
-    ProdutoController.deleteProduto);
+    checkToken,ProdutoController.deleteProduto);
+
+// Rota para obter todos os produtos de um vendedor
+router.get('/vendedor/:id',
+    checkToken,ProdutoController.getProdutosByVendedor);
 
 module.exports = router;

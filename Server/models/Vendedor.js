@@ -31,8 +31,8 @@ const vendedorSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['aberto', 'fechado'],
-    default: 'aberto',
+    enum: ['Aberto', 'Fechado'],
+    default: 'Aberto',
   },
   chavePix: {
     type: String,
